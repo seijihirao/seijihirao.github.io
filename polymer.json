@@ -5,6 +5,7 @@
 		"src/**/*",
 		"images/**/*",
 		"locales/*",
+        "README.md",
 		"bower.json"
 	]
 }

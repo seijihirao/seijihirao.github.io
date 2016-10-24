@@ -1,4 +1,4 @@
-# DISCIPULUZ WEB
+# SEIJI.LIFE
 
     Seiji's simple front end
 
