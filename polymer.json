@@ -1,0 +1,10 @@
+{
+	"entrypoint": "index.html",
+	"shell": "src/seiji-app.html",
+	"sources": [
+		"src/**/*",
+		"images/**/*",
+		"locales/*",
+		"bower.json"
+	]
+}
