@@ -1,6 +1,6 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
+<html><head><link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<dom-module id="seiji-app">
+</head><body><dom-module id="seiji-app">
   <template>
     <style>
       :host {
@@ -10,18 +10,6 @@
     <h2>Hello [[prop1]]</h2>
   </template>
 
-  <script>
-    Polymer({
-
-      is: 'seiji-app',
-
-      properties: {
-        prop1: {
-          type: String,
-          value: 'seiji-app',
-        },
-      },
-
-    });
-  </script>
+  <script>Polymer({is:"seiji-app",properties:{prop1:{type:String,value:"seiji-app"}}});</script>
 </dom-module>
+</body></html>
