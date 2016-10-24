@@ -1,0 +1,7 @@
+{
+  "name": "seiji-site",
+  "short_name": "seiji-site",
+  "description": "Seiji&#39;s website",
+  "start_url": "/",
+  "display": "standalone"
+}
