@@ -5,7 +5,25 @@
 		"src/**/*",
 		"images/**/*",
 		"locales/*",
-        "README.md",
+		"README.md",
 		"bower.json"
-	]
+	],
+	"lint": {
+		"rules": [
+			"polymer-2"
+		]
+	},
+	"builds": [{
+		"name": "bundled",
+		"bundle": true,
+		"js": {"minify": true},
+		"css": {"minify": true},
+		"html": {"minify": true}
+	},{
+		"name": "unbundled",
+		"bundle": false,
+		"js": {"minify": true},
+		"css": {"minify": true},
+		"html": {"minify": true}
+	}]
 }

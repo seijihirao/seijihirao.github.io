@@ -1,7 +1,7 @@
 {
-  "name": "seiji-site",
-  "short_name": "seiji-site",
-  "description": "Seiji website",
+  "name": "seiji.life",
+  "short_name": "seiji.life",
+  "description": "Seiji&#39;s life",
   "start_url": "/",
   "display": "standalone"
 }
