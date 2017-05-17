@@ -18,30 +18,42 @@ const buildDirectory = './build'
 
 var fs = require('fs')
 
-function string_src(filename, string) {
+/**
+ * Create file and initializate with text
+ * 
+ * @param {string} filename
+ * @param {string} text - file content
+ */
+function createFile(filename, text) {
 	var src = require('stream').Readable({ objectMode: true })
 	src._read = function () {
 		this.push(new gutil.File({
-    		cwd: "",
-			base: "",
+    		cwd: '',
+			base: '',
 			path: filename,
-			contents: new Buffer(string)
+			contents: new Buffer(text)
 		}))
 		this.push(null)
 	}
   return src
 }
 
+/**
+ * Builds project from `polymer.json` file
+ */
 gulp.task('build', async (cb) => {
-	gutil.log(`Deleting '${buildDirectory}' directory...`)
 
+	gutil.log(`Deleting '${buildDirectory}' directory...`)
 	await del([buildDirectory])
+
 	let sourcesStream = polymerProject.sources()
+	
+	//iterates through build list
 	for(var i = 0; i < polymerJson.builds.length; i++){
 		let build = polymerJson.builds[i]
 		await pump([
 			mergeStream(polymerProject.sources(), polymerProject.dependencies()),
-			gulpif(build.bundle, polymerProject.bundler()),
+			gulpif(build.bundle, polymerProject.bundler({stripComments: true})),
 			sourcesHtmlSplitter.split(), // split inline JS & CSS out into individual .js & .css files 
 			gulpif(build.js.minify, gulpif(/\.js$/, babel({presets: ['es2015']}))),
 			gulpif(build.js.minify, gulpif(/\.js$/, uglify())),
@@ -53,6 +65,6 @@ gulp.task('build', async (cb) => {
 		gutil.log(`Created '${buildDirectory}/${build.name}' directory...`)
 	}
 
-	string_src('.git', 'gitdir: /home/seiji/Documents/projects/seijihirao.github.io/.git/worktrees/bundled')
+	createFile('.git', 'gitdir: /home/seiji/Documents/projects/seijihirao.github.io/.git/worktrees/bundled')
 		.pipe(gulp.dest(buildDirectory + '/bundled'))
 })

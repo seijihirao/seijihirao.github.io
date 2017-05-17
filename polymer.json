@@ -8,6 +8,9 @@
 		"README.md",
 		"bower.json"
 	],
+	"extraDependencies": [
+		"bower_components/webcomponentsjs/*.js"
+	],
 	"lint": {
 		"rules": [
 			"polymer-2"
