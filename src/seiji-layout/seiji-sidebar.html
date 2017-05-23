@@ -1,0 +1,117 @@
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+
+<dom-module id="seiji-sidebar">
+	<template>
+		<style>
+			:host {
+				display: block;
+				position: fixed;
+				background-color: rgba(0, 0, 0, 1);
+				--iron-icon-height: 80%;
+				--iron-icon-width: 100%;
+				opacity: 0.9;
+			}
+			@media (max-aspect-ratio: 13/9) {
+				div {
+					display: inline-block;
+					margin: 0.5vh 2vh;
+					width: 3vh;
+					height: 4vh;
+				}
+				p {
+					display: none;
+				}
+			}
+			@media (min-aspect-ratio: 13/9) {
+				div {
+					margin: 2vw 1vw 0 1vw;
+					width: 3vw;
+					height: 4vw;
+				}
+				p {
+					position: relative;
+					left: -200%;
+
+					font-size: 0.7vw;
+					text-align: center;
+
+					transition: all 0.3s;
+				}
+				div:hover p{
+					left: 0;
+				}
+			}
+			div {
+				color: white;
+				cursor: pointer;
+
+				transition: all 0.3s;
+			}
+			iron-icon {
+				width: 100%;
+				height: 100%;
+			}
+			#curr:hover, #curr p {
+				color: var(--curr-primary-color);
+			} 
+			#proj:hover, #proj p {
+				color: var(--proj-primary-color);
+			} 
+			#cont:hover, #cont p {
+				color: var(--cont-primary-color);
+			} 
+			#mfab:hover, #mfab p {
+				color: var(--mfab-primary-color);
+			} 
+			#blog:hover, #blog p {
+				color: var(--blog-primary-color);
+			} 
+			#othr:hover, #othr p {
+				color: var(--othr-primary-color);
+			} 
+		</style>
+
+		<div id="home">
+			<iron-icon icon="icons:home"></iron-icon>
+		</div>
+		<div id="curr">
+			<iron-icon icon="icons:assignment-ind"></iron-icon>
+			<p>ABOUT</p>
+		</div>
+		<div id="proj">
+			<iron-icon icon="icons:code"></iron-icon>
+			<p>PROJECT</p>
+		</div>
+		<div id="cont">
+			<iron-icon icon="icons:perm-phone-msg"></iron-icon>
+			<p>CONTACT</p>
+		</div>
+		<div id="blog">
+			<iron-icon icon="icons:thumb-up"></iron-icon>
+			<p>BLOG</p>
+		</div>
+		<div id="mfab">
+			<iron-icon icon="icons:weekend"></iron-icon>
+			<p>MFAB</p>
+		</div>
+		<div id="othr">
+			<iron-icon icon="icons:card-giftcard"></iron-icon>
+			<p>BONUS</p>
+		</div>
+
+	</template>
+
+	<script>
+		/** @polymerElement */
+		class SeijiSidebar extends Polymer.Element {
+			static get is() { return 'seiji-sidebar' }
+			static get properties() {
+				return {
+				}
+			}
+		}
+
+		window.customElements.define(SeijiSidebar.is, SeijiSidebar);
+	</script>
+</dom-module>

@@ -1,0 +1,106 @@
+<link rel="import" href="../seiji-components/seiji-block.html">
+
+<dom-module id="seiji-home">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+			@media (max-aspect-ratio: 13/9) {
+				content {
+					grid-template-areas: 
+						"curr mfab blog"
+						"proj proj cont"
+						"proj proj cont"
+						"prj1 prj2 prj3"
+						"prj1 prj2 othr";
+				}
+				:host {
+					height: 95vh;
+				}
+			}
+			@media (min-aspect-ratio: 13/9) {
+				content {
+					grid-template-areas: 
+						"curr curr proj proj proj proj prj1 prj1"
+						"curr curr proj proj proj proj prj1 prj1"
+						"mfab mfab proj proj proj proj prj2 prj2"
+						"mfab mfab proj proj proj proj prj2 prj2"
+						"blog blog blog cont cont cont cont prj3"
+						"blog blog blog cont cont cont cont othr";
+				}
+				:host {
+					height: 100vh;
+				}
+			}
+			content {
+				display: grid;
+				grid-template-columns: auto;
+				grid-template-rows: auto;
+				justify-items: stretch;
+
+				height: 100%;
+			}
+			#block_blog {
+				grid-area: blog;
+				background-color: var(--blog-primary-color);
+			}
+			#block_proj {
+				grid-area: proj;
+				background-color: var(--proj-primary-color);
+			}
+			#block_prj1 {
+				grid-area: prj1;
+				background-color: #555555;
+			}
+			#block_prj2 {
+				grid-area: prj2;
+				background-color: #777777;
+			}
+			#block_prj3 {
+				grid-area: prj3;
+				background-color: #999999;
+			}
+			#block_cont {
+				grid-area: cont;
+				background-color: var(--cont-primary-color);
+			}
+			#block_othr {
+				grid-area: othr;
+				background-color: var(--othr-primary-color);
+			}
+			#block_curr {
+				grid-area: curr;
+				background-color: var(--curr-primary-color);
+			}
+			#block_mfab {
+				grid-area: mfab;
+				background-color: var(--mfab-primary-color);
+			}
+		</style>
+		<content>
+			<seiji-block id="block_blog" image="blog/logo.png"></seiji-block>
+			<seiji-block id="block_proj" image="blog/logo.png"></seiji-block>
+			<seiji-block id="block_prj1" image="blog/logo.png"></seiji-block>
+			<seiji-block id="block_prj2" image="blog/logo.png"></seiji-block>
+			<seiji-block id="block_prj3" image="blog/logo.png"></seiji-block>
+			<seiji-block id="block_cont" image="blog/logo.png"></seiji-block>
+			<seiji-block id="block_othr" image="blog/logo.png"></seiji-block>
+			<seiji-block id="block_curr" image="blog/logo.png"></seiji-block>
+			<seiji-block id="block_mfab" image="blog/logo.png"></seiji-block>
+		</content>
+	</template>
+
+	<script>
+		/** @polymerElement */
+		class SeijiHome extends Polymer.Element {
+			static get is() { return 'seiji-home' }
+			static get properties() {
+				return {
+				}
+			}
+		}
+
+		window.customElements.define(SeijiHome.is, SeijiHome);
+	</script>
+</dom-module>
