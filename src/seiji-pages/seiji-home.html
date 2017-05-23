@@ -1,0 +1,57 @@
+<link rel="import" href="../seiji-components/seiji-block.html"><dom-module id="seiji-home"><template><style>:host {
+				display: block;
+				position: absolute;
+				width: 100%;
+				height: 100%;
+			}
+			@media (max-aspect-ratio: 13/9) {
+				:host {
+					height: 95vh;
+				}
+			}
+			@media (min-aspect-ratio: 13/9) {
+				:host {
+					height: 100vh;
+				}
+				.bg div {
+					width: 3vw;
+					height: 3vw;
+				}
+			}
+			content {
+				height: 100%;
+
+				overflow: hidden;
+			}
+			content h1 {
+				margin-left: 10vw;
+				font-size: 10vw;
+			}
+			content h3 {
+				margin-left: 10vw;
+				font-size: 2vw;
+				font-weight: normal;
+			}
+			.bg {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+
+				overflow: hidden;
+			}
+			.bg div{
+				display: inline-block;
+				margin: 0;
+				padding: 0;
+				background-color: black;
+				opacity: 0;
+
+				transition: 1s linear 1s;
+			}
+			.bg div:hover{
+				opacity: 0.9;
+
+				transition: .3s linear 0s;
+			}</style><content><h1>Rodrigo Seiji<br>Piubeli Hirao</h1><h3>Software Developer</h3></content><div class="bg"><template is="dom-repeat" items="{{numBlocksH}}"><template is="dom-repeat" items="{{numBlocksV}}"><div></div></template></template></div></template><script>"use strict";function _classCallCheck(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function _possibleConstructorReturn(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function _inherits(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}var _createClass=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n];r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),SeijiHome=function(e){function t(){return _classCallCheck(this,t),_possibleConstructorReturn(this,(t.__proto__||Object.getPrototypeOf(t)).apply(this,arguments))}return _inherits(t,e),_createClass(t,null,[{key:"is",get:function(){return"seiji-home"}},{key:"properties",get:function(){return{numBlocksH:{type:Array,value:function(){return new Array(32)}},numBlocksV:{type:Array,value:function(){return console.log(100/window.innerWidth*window.innerHeight),new Array(Math.round(this.numBlocksH.length/(.95*window.innerWidth)*window.innerHeight))}}}}}]),t}(Polymer.Element);window.customElements.define(SeijiHome.is,SeijiHome);</script></dom-module>
