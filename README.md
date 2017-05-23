@@ -1,6 +1,6 @@
 # SEIJI.LIFE
 
-    Seiji's simple front end
+    Seiji's simple front end, because my backend is being used by a big man
 
 ## TECNOLOGIES
 [Polymer 1.0](https://www.polymer-project.org/1.0/)

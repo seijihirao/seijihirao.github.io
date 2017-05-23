@@ -1,14 +1,16 @@
 {
-  "name": "seiji-site",
-  "description": "Seiji&#39;s website",
+  "name": "seiji.life",
+  "description": "Seiji&#39;s life",
   "main": "index.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0"
+    "polymer": "Polymer/polymer#^2.0.0-rc.3",
+    "ce-page-manager": "^2.0.0",
+    "paper-styles": "^2.0.0",
+    "iron-icon": "^2.0.0",
+    "iron-icons": "^2.0.0"
   },
   "devDependencies": {
-    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
-    "web-component-tester": "^4.0.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+    "web-component-tester": "^6.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   }
 }
