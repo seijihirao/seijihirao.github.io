@@ -2,8 +2,9 @@ const del = require('del')
 const gulp = require('gulp')
 const gulpif = require('gulp-if')
 var gutil = require('gulp-util')
-const babel = require('gulp-babel');
+const babel = require('gulp-babel')
 const uglify = require('gulp-uglify')
+const uglifycss = require('gulp-uglifycss')
 const cssSlam = require('css-slam').gulp
 const htmlMinifier = require('gulp-html-minifier')
 const mergeStream = require('merge-stream')
@@ -55,8 +56,8 @@ gulp.task('build', async (cb) => {
 			mergeStream(polymerProject.sources(), polymerProject.dependencies()),
 			gulpif(build.bundle, polymerProject.bundler({stripComments: true})),
 			sourcesHtmlSplitter.split(), // split inline JS & CSS out into individual .js & .css files 
-			gulpif(build.js.minify, gulpif(/\.js$/, babel({presets: ['es2015']}))),
-			gulpif(build.js.minify, gulpif(/\.js$/, uglify())),
+			gulpif(build.js.minify, gulpif(/\.js$/, babel({presets: ['babili']}))),
+			//gulpif(build.js.minify, gulpif(/\.js$/, uglify())), //Uglify js not working on es6 (usin babili)
 			gulpif(build.css.minify, gulpif(/\.css$/, cssSlam())),
 			gulpif(build.html.minify, gulpif(/\.html$/, htmlMinifier({collapseWhitespace: true}))),
 			sourcesHtmlSplitter.rejoin(), // rejoins those files back into their original location 
@@ -66,5 +67,7 @@ gulp.task('build', async (cb) => {
 	}
 
 	createFile('.git', 'gitdir: /home/seiji/Documents/projects/seijihirao.github.io/.git/worktrees/bundled')
+		.pipe(gulp.dest(buildDirectory + '/bundled'))
+	createFile('CNAME', 'seiji.life')
 		.pipe(gulp.dest(buildDirectory + '/bundled'))
 })
