@@ -1,3 +1,11 @@
 {
-    "": "seiji-home"
+    "": "seiji-home",
+    "about": "seiji-about",
+    "projects": "seiji-projects",
+    "contact": "seiji-contact",
+    "blog": "seiji-blog",
+    "codetocode": "seiji-blog",
+    "mfab": "seiji-mfab",
+    "bonus": "seiji-bonus",
+    "easteregg": "seiji-bonus"
 }

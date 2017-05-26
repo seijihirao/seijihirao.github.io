@@ -41,53 +41,48 @@
 				--paper-input-container-input-color: #fff;
 
 				/* pages */
+				--about-primary-color:		#3088af;
+				--projects-primary-color:	#333333;
+				--contact-primary-color:	#0097a7;
 				--blog-primary-color:		#1a237e;
-				--curr-primary-color:		#3088af;
-				--proj-primary-color:		#333333;
-				--cont-primary-color:		#0097a7;
 				--mfab-primary-color:		#80d8ff;
-				--othr-primary-color:		#9700a7;
+				--bonus-primary-color:		#9700a7;
 
 			}
 			:host {
 				font-family: 'Roboto', sans-serif;
 				display: grid;
+				grid-template-rows: auto;
+				grid-template-areas: 
+					"sidebar content";
+				justify-items: stretch;
+
 				height: 100%;
 				width: 100%;
-
-				/*background-image: url('/res/img/bg.png');*/
 			}
 			@media (max-aspect-ratio: 13/9) {
 				:host {
-					grid-template-columns: auto;
-					grid-template-rows: 5vh 1fr;
-					grid-template-areas: 
-						"sidebar"
-						"content";
+					grid-template-columns: 10vh 1fr;
 				}
 				seiji-sidebar {
-					left: 0;
-					top: 0;
-					width: 100%;
-					height: 5vh;
+					width: 10vh;
 				}
 			}
 			@media (min-aspect-ratio: 13/9) {
 				:host {
 					grid-template-columns: 5vw 1fr;
-					grid-template-rows: auto;
-					grid-template-areas: 
-						"sidebar content";
 				}
 				seiji-sidebar {
-					left: 0;
-					top: 0;
 					width: 5vw;
-					height: 100%;
 				}
 			}
+
 			seiji-sidebar {
 				z-index: 999;
+				left: 0;
+				top: 0;
+				grid-area: sidebar;
+				height: 100%;
 			}
 			content {
 				z-index: 100;
@@ -97,7 +92,7 @@
 				display: block;
 			}
 		</style>
-		<seiji-sidebar></seiji-sidebar>
+		<seiji-sidebar page="[[page]]"></seiji-sidebar>
 		<content>
 			<ce-page-manager
 				id="pagemanager"
@@ -124,11 +119,7 @@
 			
 			_updatePage(e){
 				//setting page property
-				let page = e.detail.path.substr(e.detail.path.indexOf('/') + 1) || '__home__'
-				if(!this.token && page != '__home__'){
-					window.location = '/'
-				}
-				this.page = page
+				this.page = e.detail.path.substr(e.detail.path.indexOf('/') + 1) || '__home__'
 			}
 		}
 

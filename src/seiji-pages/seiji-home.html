@@ -1,5 +1,3 @@
-<link rel="import" href="../seiji-components/seiji-block.html">
-
 <dom-module id="seiji-home">
 	<template>
 		<style>
@@ -13,26 +11,38 @@
 				:host {
 					height: 95vh;
 				}
+				content h1 {
+					margin-left: 5vh;
+					font-size: 8vh;
+				}
+				content h3 {
+					margin-left: 5vh;
+					font-size: 2vh;
+				}
 			}
 			@media (min-aspect-ratio: 13/9) {
 				:host {
 					height: 100vh;
 				}
 				.bg div {
-					width: 4vw;
-					height: 4vw;
+					width: 3.17vw;
+					height: 3.17vw;
+				}
+				content h1 {
+					margin-left: 10vw;
+					font-size: 10vw;
+				}
+				content h3 {
+					margin-left: 10vw;
+					font-size: 2vw;
 				}
 			}
 			content {
 				height: 100%;
-			}
-			content h1 {
-				margin-left: 10vw;
-				font-size: 10vw;
+
+				overflow: hidden;
 			}
 			content h3 {
-				margin-left: 10vw;
-				font-size: 2vw;
 				font-weight: normal;
 			}
 			.bg {
@@ -41,15 +51,17 @@
 				top: 0;
 				width: 100%;
 				height: 100%;
+
+				overflow: hidden;
 			}
 			.bg div{
 				display: inline-block;
-				margin: 0;
+				margin: 0 -5px -4px 0;
 				padding: 0;
 				background-color: black;
 				opacity: 0;
 
-				transition: 1s linear 1s;
+				transition: 2s linear 1s;
 			}
 			.bg div:hover{
 				opacity: 0.9;
@@ -85,13 +97,12 @@
 					numBlocksH: {
 						type: Array,
 						value: () => {
-							return new Array(22)
+							return new Array(32)
 						}
 					},
 					numBlocksV: {
 						type: Array,
 						value: function() {
-							console.log((100/window.innerWidth)*window.innerHeight)
 							return new Array(Math.round((this.numBlocksH.length/(window.innerWidth*0.95))*window.innerHeight))
 						}
 					}
