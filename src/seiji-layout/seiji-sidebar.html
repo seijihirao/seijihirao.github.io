@@ -30,10 +30,10 @@
 			@media (max-aspect-ratio: 13/9) {
 				p {
 					left: 0;
-					font-size: 1.4vh;
+					font-size: 1.8vh;
 				}
 				a {
-					margin: 5vh 1vh 0 1vh;
+					margin: 5vh 1vh 2.5vh 1vh;
 					width: 8vh;
 					height: 8vh;
 				}
@@ -123,7 +123,10 @@
 				this.shadowRoot.querySelectorAll('a').forEach(function(element) {
 					element.classList.remove('selected')
 				}, this);
-				this.shadowRoot.querySelector('#' + this.page).classList.add('selected')
+				let item = this.shadowRoot.querySelector('#' + this.page)
+				if(this.page != '__home__'){
+					item.classList.add('selected')
+				}
 			}
 		}
 
