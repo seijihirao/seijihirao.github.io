@@ -5,14 +5,11 @@
 				display: block;
 				position: absolute;
 				width: 100%;
-				height: 100%;
+				height: 100vh;
 				background-color: #222222;
 				color: white;
 			}
 			@media (max-aspect-ratio: 13/9) {
-				:host {
-					height: 100vh;
-				}
 				content h1 {
 					margin-left: 5vh;
 					font-size: 8vh;
@@ -23,9 +20,6 @@
 				}
 			}
 			@media (min-aspect-ratio: 13/9) {
-				:host {
-					height: 100vh;
-				}
 				.bg div {
 					width: 3.06vw;
 					height: 3.06vw;
