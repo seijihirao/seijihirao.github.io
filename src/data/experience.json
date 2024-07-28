@@ -1,6 +1,12 @@
 {
   "experience": [
     {
+      "company": "Critical Tech Works",
+      "job": "Senior Software Engineer",
+      "date": "Sep 2022 - Present",
+      "description": "Worked at CTW, a BMW Group software company, on the Retail Integration Service. Developed REST and streaming interfaces to connect BMW services with dealers worldwide. As part of a Scrum team of 12 developers, played a key role in strategic planning and execution. Spearheaded the migration of services from Azure to AWS, configuring Kubernetes clusters with Grafana and OpenTelemetry for seamless transition of over 20 services. Laid the groundwork for migrating from Payara to Quarkus, which streamlined development and operations. Fostered a culture of documentation and transparency by creating wikis and communication channels for clients and developers. Enhanced system performance and reliability, facilitated better resource management, and provided a scalable infrastructure for future growth. Improved CTW's reputation for delivering robust and innovative solutions within the BMW Group by releasing the services 20% earlier than expected."
+    },
+    {
       "company": "DieselBank",
       "job": "Senior Software Engineer",
       "date": "Jan 2022 - Mar 2023",
