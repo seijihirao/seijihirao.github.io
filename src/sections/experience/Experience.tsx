@@ -29,7 +29,7 @@ export default function Experience() {
                 src={
                   process.env.PUBLIC_URL +
                   '/assets/works/' +
-                  exp.company.toLowerCase().replace(' ', '_') +
+                  exp.company.toLowerCase().replaceAll(' ', '_') +
                   '.jpg'
                 }
                 className="rounded-full"
