@@ -1,19 +1,39 @@
 # SEIJI.LIFE
 
-    Seiji's simple front end
+Seiji's personal website showcasing professional experience and skills.
 
-## TECNOLOGIES
-[React](https://react.dev/)
-[Tailwind](https://tailwindcss.com/)
-[DaisyUI](https://daisyui.com/)
+## TECHNOLOGIES
+
+### Core Technologies
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [DaisyUI](https://daisyui.com/) - Tailwind CSS component library
+- Vanilla JavaScript - Core functionality
+
+### Additional Libraries
+- [AOS (Animate On Scroll)](https://michalsnik.github.io/aos/) - Scroll animations
+- [TSParticles](https://particles.js.org/) - Interactive particle effects
+- [Handlebars](https://handlebarsjs.com/) - Templating engine
 
 ## DEVELOPMENT
 
-### Installing
-* Install [NodeJS with NPM](https://nodejs.org/) from its site or your package manager 
-* Install necessary libraries `$ npm i`
+### Prerequisites
+* [NodeJS with NPM](https://nodejs.org/) - Install from the official site or your package manager
 
-### Running
+### Installation
+```bash
+# Install dependencies
+npm install
 ```
-$ npm run start
+
+### Running Locally
+```bash
+# Start development server
+npm run start
 ```
+
+## FEATURES
+- Responsive design with dark theme
+- Interactive particle background
+- Smooth scroll animations
+- Dynamic experience timeline
+- Professional portfolio sections

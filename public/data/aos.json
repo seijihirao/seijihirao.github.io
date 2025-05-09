@@ -1,0 +1,21 @@
+{
+  "duration": 1000,
+  "once": false,
+  "mirror": true,
+  "offset": 100,
+  "easing": "ease-in-out-cubic",
+  "delay": 0,
+  "anchorPlacement": "top-bottom",
+  "disable": "mobile",
+  "startEvent": "DOMContentLoaded",
+  "useClassNames": true,
+  "disableMutationObserver": false,
+  "disable": false,
+  "colors": {
+    "primary": "hsl(262, 83%, 58%)",
+    "secondary": "hsl(316, 70%, 50%)",
+    "accent": "hsl(199, 89%, 48%)",
+    "background": "hsl(240, 10%, 3.9%)",
+    "foreground": "hsl(0, 0%, 98%)"
+  }
+} 
