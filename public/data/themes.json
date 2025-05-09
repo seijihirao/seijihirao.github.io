@@ -1,0 +1,169 @@
+{
+  "themes": [
+    {
+      "name": "light",
+      "icon": "ri-sun-line",
+      "label": "Light"
+    },
+    {
+      "name": "dark",
+      "icon": "ri-moon-line",
+      "label": "Dark"
+    },
+    {
+      "name": "cupcake",
+      "icon": "ri-cake-3-line",
+      "label": "Cupcake"
+    },
+    {
+      "name": "bumblebee",
+      "icon": "ri-bee-line",
+      "label": "Bumblebee"
+    },
+    {
+      "name": "emerald",
+      "icon": "ri-leaf-line",
+      "label": "Emerald"
+    },
+    {
+      "name": "corporate",
+      "icon": "ri-building-line",
+      "label": "Corporate"
+    },
+    {
+      "name": "synthwave",
+      "icon": "ri-movie-2-line",
+      "label": "Synthwave"
+    },
+    {
+      "name": "retro",
+      "icon": "ri-game-line",
+      "label": "Retro"
+    },
+    {
+      "name": "cyberpunk",
+      "icon": "ri-robot-line",
+      "label": "Cyberpunk"
+    },
+    {
+      "name": "valentine",
+      "icon": "ri-heart-line",
+      "label": "Valentine"
+    },
+    {
+      "name": "halloween",
+      "icon": "ri-ghost-line",
+      "label": "Halloween"
+    },
+    {
+      "name": "garden",
+      "icon": "ri-plant-line",
+      "label": "Garden"
+    },
+    {
+      "name": "forest",
+      "icon": "ri-tree-line",
+      "label": "Forest"
+    },
+    {
+      "name": "aqua",
+      "icon": "ri-water-flash-line",
+      "label": "Aqua"
+    },
+    {
+      "name": "pastel",
+      "icon": "ri-palette-line",
+      "label": "Pastel"
+    },
+    {
+      "name": "fantasy",
+      "icon": "ri-magic-line",
+      "label": "Fantasy"
+    },
+    {
+      "name": "wireframe",
+      "icon": "ri-layout-line",
+      "label": "Wireframe"
+    },
+    {
+      "name": "black",
+      "icon": "ri-contrast-2-line",
+      "label": "Black"
+    },
+    {
+      "name": "luxury",
+      "icon": "ri-vip-crown-line",
+      "label": "Luxury"
+    },
+    {
+      "name": "dracula",
+      "icon": "ri-vampire-line",
+      "label": "Dracula"
+    },
+    {
+      "name": "cmyk",
+      "icon": "ri-printer-line",
+      "label": "CMYK"
+    },
+    {
+      "name": "autumn",
+      "icon": "ri-leaf-line",
+      "label": "Autumn"
+    },
+    {
+      "name": "business",
+      "icon": "ri-briefcase-line",
+      "label": "Business"
+    },
+    {
+      "name": "acid",
+      "icon": "ri-flask-line",
+      "label": "Acid"
+    },
+    {
+      "name": "lemonade",
+      "icon": "ri-drinks-line",
+      "label": "Lemonade"
+    },
+    {
+      "name": "night",
+      "icon": "ri-moon-clear-line",
+      "label": "Night"
+    },
+    {
+      "name": "coffee",
+      "icon": "ri-cup-line",
+      "label": "Coffee"
+    },
+    {
+      "name": "winter",
+      "icon": "ri-snowy-line",
+      "label": "Winter"
+    },
+    {
+      "name": "dim",
+      "icon": "ri-contrast-line",
+      "label": "Dim"
+    },
+    {
+      "name": "nord",
+      "icon": "ri-snowy-line",
+      "label": "Nord"
+    },
+    {
+      "name": "sunset",
+      "icon": "ri-sun-cloudy-line",
+      "label": "Sunset"
+    },
+    {
+      "name": "mocha",
+      "icon": "ri-cup-line",
+      "label": "Mocha"
+    },
+    {
+      "name": "contrast",
+      "icon": "ri-contrast-2-line",
+      "label": "Contrast"
+    }
+  ]
+} 
