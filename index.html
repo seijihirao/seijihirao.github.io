@@ -1,46 +1,262 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="mocha">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rodrigo Seiji P. Hirao - Software Engineer</title>
     
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/assets/icons/ios/icons8-binary-code-windows-11-76.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/assets/icons/web/icons8-binary-code-windows-11-32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/assets/icons/web/icons8-binary-code-windows-11-16.png">
-		<link rel="manifest" href="%PUBLIC_URL%/assets/icons/android/manifest.json">
-		<link rel="mask-icon" href="%PUBLIC_URL%/assets/icons/ios/icons8-binary-code-windows-11-76.png" color="#555555">
-		<link rel="shortcut icon" href="%PUBLIC_URL%/assets/icons/ios/icons8-binary-code-windows-11-76.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/web/icons8-binary-code-windows-11-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/web/icons8-binary-code-windows-11-32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/web/icons8-binary-code-windows-11-96.png">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/ios/icons8-binary-code-windows-11-57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/ios/icons8-binary-code-windows-11-60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/ios/icons8-binary-code-windows-11-72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/ios/icons8-binary-code-windows-11-76.png">
+    
+    <!-- Windows Icons -->
+    <meta name="msapplication-square70x70logo" content="/assets/icons/windows/icons8-binary-code-windows-11-70.png">
+    
+    <!-- Android Icons -->
+    <link rel="icon" type="image/png" sizes="72x72" href="/assets/icons/android/icons8-binary-code-windows-11-72.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/android/icons8-binary-code-windows-11-96.png">
+    
+    <!-- DaisyUI and Tailwind -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Remix Icon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- TSParticles -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.9.3/tsparticles.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.9.3/tsparticles-slim.bundle.min.js"></script>
 
-    <meta
-      name="description"
-      content="Seiji Personal website"
-    />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <!-- Handlebars -->
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.8/dist/handlebars.min.js"></script>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>Seiji.life</title>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <!-- Navbar -->
+    <div class="navbar px-5" id="desktop">
+        <div class="flex-1">
+            <a href="/" class="uppercase text-xl">
+                <strong>seiji.life</strong>
+            </a>
+        </div>
+        <div class="flex-none gap-2">
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost">
+                    <i class="ri-palette-line text-xl"></i>
+                </div>
+                <ul tabindex="0" class="dropdown-content z-[9999] menu p-2 shadow bg-base-100 rounded-box w-96">
+                    <script id="themes-template" type="text/x-handlebars-template">
+                        <div class="grid grid-cols-2 gap-2">
+                            {{#each themes}}
+                            <li><button onclick="setTheme('{{name}}')" class="flex items-center gap-2">
+                                <i class="{{icon}}"></i>
+                                {{label}}
+                            </button></li>
+                            {{/each}}
+                        </div>
+                    </script>
+                </ul>
+            </div>
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="#about" data-aos="fade-down" data-aos-duration="1000">About</a></li>
+                <li><a href="#experience" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="100">Experience</a></li>
+                <li><a href="#contact" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="200">Contact</a></li>
+            </ul>
+        </div>
+    </div>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <!-- Home Section -->
+    <div class="hero w-full min-h-screen px-5 relative">
+        <div id="tsparticles" class="absolute inset-0"></div>
+        <div class="relative z-10" data-aos="fade-up">
+            <h1 class="text-7xl font-bold">Rodrigo Seiji P. Hirao</h1>
+            <h2 class="text-3xl font-bold">Software Engineer</h2>
+        </div>
+    </div>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <!-- About Section -->
+    <div class="hero" id="about">
+        <div class="h-screen overflow-hidden">
+            <img
+                alt="Luna <3"
+                src="/assets/bg/about.jpg"
+                class="contrast-[.90] brightness-[.40] hue-rotate-180 object-cover min-h-full"
+                onerror="this.onerror=null; this.src='/assets/icons/logo.png';"
+            />
+        </div>
+        <div class="hero-content min-h-screen w-full px-5">
+            <div data-aos="fade-up">
+                <h1 class="text-3xl font-bold">
+                    Experienced Software Developer with Diverse Industry Background and
+                    a Focus on Scalability and Robust Solutions.
+                </h1>
+                <div class="flex pt-5">
+                    <a href="https://www.linkedin.com/in/seijihirao/" class="mr-6">
+                        <img
+                            alt="LinkedIn"
+                            src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"
+                            class="border border-white"
+                        />
+                    </a>
+                    <a href="https://github.com/seijihirao" class="mr-6">
+                        <img
+                            alt="Github"
+                            src="https://img.shields.io/badge/Github-000000?style=for-the-badge&logo=github&logoColor=white"
+                            class="border border-white"
+                        />
+                    </a>
+                    <a href="https://stackoverflow.com/users/2901111/seiji-hirao" class="mr-6">
+                        <img
+                            alt="Stackoverflow"
+                            src="https://img.shields.io/badge/Stack_Overflow-FE7A16?style=for-the-badge&logo=stack-overflow&logoColor=white"
+                            class="border border-white"
+                        />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Experience Section -->
+    <div class="hero min-h-screen px-5" id="experience">
+        <div class="timeline-container relative max-w-5xl mx-auto py-20" data-aos="fade-up">
+            <script id="experience-template" type="text/x-handlebars-template">
+                {{#each experience}}
+                <div class="timeline-item mb-32 relative group" data-aos="fade-up" data-aos-delay="{{@index}}00">
+                    <div class="card-stack relative">
+                        <!-- Card Shadow -->
+                        <div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] h-full bg-black/20 rounded-xl blur-xl"></div>
+                        
+                        <!-- Main Card -->
+                        <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 hover:rotate-1 perspective-1000">
+                            <div class="card-body relative overflow-hidden">
+                                <!-- Card Content -->
+                                <div class="relative z-10">
+                                    <!-- Company Logo and Title -->
+                                    <div class="flex items-center mb-6">
+                                        <div class="relative">
+                                            <img
+                                                src="/assets/works/{{lowercase company}}.jpg"
+                                                alt="{{company}}"
+                                                class="w-24 h-24 rounded-xl mr-6 ring-4 ring-primary/20 object-cover transform transition-transform duration-500 group-hover:scale-110"
+                                                onerror="this.onerror=null; this.src='/assets/icons/logo.png';"
+                                            />
+                                            <div class="absolute -inset-1 bg-primary/20 rounded-xl blur-lg -z-10 transform transition-transform duration-500 group-hover:scale-110"></div>
+                                        </div>
+                                        <div>
+                                            <h3 class="card-title text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">{{job}}</h3>
+                                            <h4 class="text-xl opacity-80 font-medium">{{company}}</h4>
+                                        </div>
+                                    </div>
+
+                                    <!-- Date Badge -->
+                                    <div class="flex items-center mb-6">
+                                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary">
+                                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                            {{date}}
+                                        </span>
+                                    </div>
+
+                                    <!-- Description -->
+                                    <p class="text-lg leading-relaxed">{{description}}</p>
+
+                                    <!-- Card Corner Decoration -->
+                                    <div class="absolute top-0 right-0 w-32 h-32 opacity-10">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </script>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <footer class="footer footer-center p-10 bg-primary text-primary-content" id="contact">
+        <div data-aos="fade-up">
+            <p class="font-bold">Rodrigo Seiji Piubeli Hirao</p>
+            <p>rodrigo.seiji.hirao+site@gmail.com</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize everything
+        async function initialize() {
+            try {
+                // Load Tailwind configuration
+                const tailwindResponse = await fetch('/data/tailwind.json');
+                const tailwindConfig = await tailwindResponse.json();
+                tailwind.config = tailwindConfig;
+
+                // Load AOS configuration
+                const aosResponse = await fetch('/data/aos.json');
+                const aosConfig = await aosResponse.json();
+                AOS.init(aosConfig);
+
+                // Load particles configuration
+                const particlesResponse = await fetch('/data/particles.json');
+                const particlesConfig = await particlesResponse.json();
+                await tsParticles.load("tsparticles", particlesConfig);
+
+                // Load and render experience data
+                const experienceResponse = await fetch('/data/experience.json');
+                const experienceData = await experienceResponse.json();
+
+                // Load and render themes
+                const themesResponse = await fetch('/data/themes.json');
+                const themesData = await themesResponse.json();
+                const themesTemplate = Handlebars.compile(document.getElementById('themes-template').innerHTML);
+                document.querySelector('.dropdown-content').innerHTML = themesTemplate(themesData);
+
+                // Register Handlebars helpers
+                Handlebars.registerHelper('lowercase', function(str) {
+                    return str.toLowerCase().replaceAll(' ', '_');
+                });
+
+                // Compile and render the template
+                const template = Handlebars.compile(document.getElementById('experience-template').innerHTML);
+                document.querySelector('.timeline-container').innerHTML = template(experienceData);
+
+                // Initialize AOS for the experience elements
+                AOS.refresh();
+            } catch (error) {
+                console.error('Error initializing the page:', error);
+            }
+        }
+
+        // Theme switcher function
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'mocha';
+        setTheme(savedTheme);
+
+        // Start initialization
+        initialize();
+    </script>
   </body>
 </html>
