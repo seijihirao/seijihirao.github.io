@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="mocha">
+<html lang="en" x-data="{ theme: localStorage.getItem('theme') || 'mocha' }" :data-theme="theme">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,6 +40,10 @@
 
     <!-- Handlebars -->
     <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.8/dist/handlebars.min.js"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <style>
         html, body {
             position: relative;
@@ -50,7 +54,7 @@
 </head>
 <body class="bg-base-100">
     <!-- Navbar -->
-    <div class="navbar px-5 hidden md:flex">
+    <div class="navbar px-5">
         <div class="flex-1">
             <a href="/" class="uppercase text-xl">
                 <strong>seiji.life</strong>
@@ -65,7 +69,7 @@
                     <script id="themes-template" type="text/x-handlebars-template">
                         <div class="grid grid-cols-2 gap-2">
                             {{#each themes}}
-                            <li><button onclick="setTheme('{{name}}')" class="flex items-center gap-2">
+                            <li><button @click="theme = '{{name}}'; localStorage.setItem('theme', '{{name}}')" class="flex items-center gap-2">
                                 <i class="{{icon}}"></i>
                                 {{label}}
                             </button></li>
@@ -74,133 +78,114 @@
                     </script>
                 </ul>
             </div>
-            <ul class="menu menu-horizontal px-1">
-                <li><a href="#about" data-aos="fade-down" data-aos-duration="1000">About</a></li>
-                <li><a href="#experience" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="100">Experience</a></li>
-                <li><a href="#contact" data-aos="fade-down" data-aos-duration="1000" data-aos-delay="200">Contact</a></li>
-            </ul>
         </div>
     </div>
 
-    <!-- Home Section -->
-    <div class="hero w-full h-screen px-5 relative">
+    <!-- Main Content -->
+    <div class="hero min-h-[calc(100vh-4rem)] px-5 relative">
         <div id="tsparticles" class="absolute inset-0"></div>
-        <div class="relative z-10" data-aos="fade-up">
-            <h1 class="text-7xl font-bold">Rodrigo Seiji P. Hirao</h1>
-            <h2 class="text-3xl font-bold">Software Engineer</h2>
-        </div>
-    </div>
-
-    <!-- About Section -->
-    <div class="hero" id="about">
-        <div class="h-screen overflow-hidden">
-            <img
-                alt="Luna <3"
-                src="/assets/bg/about.jpg"
-                class="contrast-[.90] brightness-[.40] hue-rotate-180 object-cover min-h-full"
-                onerror="this.onerror=null; this.src='/assets/icons/logo.png';"
-            />
-        </div>
-        <div class="hero-content min-h-screen w-full px-5">
-            <div data-aos="fade-up">
-                <h1 class="text-3xl font-bold text-neutral-content">
-                    Experienced Software Developer with Diverse Industry Background and
-                    a Focus on Scalability and Robust Solutions.
-                </h1>
-                <div class="flex pt-5">
-                    <a href="https://www.linkedin.com/in/seijihirao/" class="mr-6">
-                        <img
-                            alt="LinkedIn"
-                            src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white"
-                            class="border border-white"
-                        />
-                    </a>
-                    <a href="https://github.com/seijihirao" class="mr-6">
-                        <img
-                            alt="Github"
-                            src="https://img.shields.io/badge/Github-000000?style=for-the-badge&logo=github&logoColor=white"
-                            class="border border-white"
-                        />
-                    </a>
-                    <a href="https://stackoverflow.com/users/2901111/seiji-hirao" class="mr-6">
-                        <img
-                            alt="Stackoverflow"
-                            src="https://img.shields.io/badge/Stack_Overflow-FE7A16?style=for-the-badge&logo=stack-overflow&logoColor=white"
-                            class="border border-white"
-                        />
-                    </a>
+        <div class="hero-content w-full relative" data-aos="fade-up">
+            <div class="relative">
+                <!-- Personal Info -->
+                <div class="text-center max-w-3xl mx-auto">
+                    <h1 class="text-5xl md:text-7xl font-bold mb-4">Rodrigo Seiji P. Hirao</h1>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-8">Software Engineer</h2>
+                    <p class="text-lg mb-8">
+                        Experienced Software Developer with Diverse Industry Background and
+                        a Focus on Scalability and Robust Solutions.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <a href="https://www.linkedin.com/in/seijihirao/" class="btn btn-primary">
+                            <i class="ri-linkedin-box-line mr-2"></i>
+                            LinkedIn
+                        </a>
+                        <a href="https://github.com/seijihirao" class="btn btn-primary">
+                            <i class="ri-github-line mr-2"></i>
+                            GitHub
+                        </a>
+                        <a href="https://stackoverflow.com/users/2901111/seiji-hirao" class="btn btn-primary">
+                            <i class="ri-stack-overflow-line mr-2"></i>
+                            Stack Overflow
+                        </a>
+                        <a href="mailto:rodrigo.seiji.hirao+site@gmail.com" class="btn btn-primary">
+                            <i class="ri-mail-line mr-2"></i>
+                            Contact
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Experience Section -->
-    <div class="hero px-5" id="experience">
-        <div class="timeline-container relative max-w-5xl mx-auto py-20" data-aos="fade-up">
-            <script id="experience-template" type="text/x-handlebars-template">
-                {{#each experience}}
-                <div class="timeline-item mb-32 relative group" data-aos="fade-up" data-aos-delay="{{@index}}00">
-                    <div class="card-stack relative">
-                        <!-- Card Shadow -->
-                        <div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-[calc(100%-2rem)] h-full bg-black/20 rounded-xl blur-xl"></div>
-                        
-                        <!-- Main Card -->
-                        <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 hover:rotate-1 perspective-1000">
-                            <div class="card-body relative overflow-hidden">
-                                <!-- Card Content -->
-                                <div class="relative z-10">
-                                    <!-- Company Logo and Title -->
-                                    <div class="flex items-center mb-6">
-                                        <div class="relative">
-                                            <img
-                                                src="/assets/works/{{lowercase company}}.jpg"
-                                                alt="{{company}}"
-                                                class="w-24 h-24 rounded-xl mr-6 ring-4 ring-primary/20 object-cover transform transition-transform duration-500 group-hover:scale-110"
-                                                onerror="this.onerror=null; this.src='/assets/icons/logo.png';"
-                                            />
-                                            <div class="absolute -inset-1 bg-primary/20 rounded-xl blur-lg -z-10 transform transition-transform duration-500 group-hover:scale-110"></div>
-                                        </div>
-                                        <div>
-                                            <h3 class="card-title text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">{{job}}</h3>
-                                            <h4 class="text-xl opacity-80 font-medium">{{company}}</h4>
-                                        </div>
-                                    </div>
+        <!-- Timeline in Corner -->
+        <div class="timeline-container absolute bottom-0 right-0 w-full h-full overflow-visible" data-aos="fade-up">
+            <job-card
+                company="Aiwyn"
+                job="Senior Software Engineer"
+                date="Apr 2025 - Present"
+                description="A Senior Fullstack Engineer role at Aiwyn, contributing to the development of scalable and maintainable systems. Introduced state-of-the-art coding architecture to improve overall code quality and efficiency. Current focus includes advancing the functionality and performance of the Job Module."
+                delay="700"
+            ></job-card>
 
-                                    <!-- Date Badge -->
-                                    <div class="flex items-center mb-6">
-                                        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary">
-                                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                            </svg>
-                                            {{date}}
-                                        </span>
-                                    </div>
+            <job-card
+                company="Critical Tech Works"
+                job="Senior Software Engineer"
+                date="Sep 2023 - Mar 2025"
+                description="Led the migration of BMW's Retail Integration Service from Azure to AWS, reducing deployment time by 20%. Architected Kubernetes clusters with Grafana and OpenTelemetry for 20+ microservices. Spearheaded the transition from Payara to Quarkus, improving development efficiency and system performance."
+                delay="600"
+            ></job-card>
 
-                                    <!-- Description -->
-                                    <p class="text-lg leading-relaxed">{{description}}</p>
+            <job-card
+                company="DieselBank"
+                job="Senior Software Engineer"
+                date="Jan 2022 - Mar 2023"
+                description="Architected a scalable mobile banking platform using Flutter, Redux, and Firebase. Reduced fraud cases from 100 to 0 monthly through proof-of-liveness implementation. Cut infrastructure costs while improving system reliability using AWS ECS, Kafka, and Prometheus."
+                delay="500"
+            ></job-card>
 
-                                    <!-- Card Corner Decoration -->
-                                    <div class="absolute top-0 right-0 w-32 h-32 opacity-10">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {{/each}}
-            </script>
+            <job-card
+                company="KIS Solutions"
+                job="Software Engineer (Remote)"
+                date="Nov 2018 - Dec 2021"
+                description="Delivered Estee Lauder's iOS app deployed across Latin America. Automated data processing pipeline reducing development time from 2 hours to 10 seconds per table. Built full-stack solutions using Spark, Angular, and Java microservices."
+                delay="400"
+            ></job-card>
+
+            <job-card
+                company="Curtir Sua Cidade"
+                job="Tech Lead /Software Engineer"
+                date="Aug 2017 - Jan 2019"
+                description="Led a team of 3 developers in building an event discovery platform with 10,000+ listings. Migrated backend from Node.js to custom Python framework, improving performance by 40%. Implemented CI/CD pipeline using Docker and GitHub."
+                delay="300"
+            ></job-card>
+
+            <job-card
+                company="Conpec"
+                job="Software Engineer (Freelancer)"
+                date="Apr 2015 - Jan 2018"
+                description="Developed modern web applications using Polymer and Python. Improved Moodle platform accessibility, increasing user engagement by 30%. Delivered multiple client projects with focus on performance and user experience."
+                delay="200"
+            ></job-card>
+
+            <job-card
+                company="Clube da Entrega"
+                job="Software Developer"
+                date="May 2015 - Jul 2016"
+                description="Built a food delivery platform connecting restaurants with customers. Implemented real-time order tracking and analytics dashboard. Developed full-stack solution using Node.js and modern web technologies."
+                delay="100"
+            ></job-card>
+
+            <job-card
+                company="Dot-Insight"
+                job="Dotnet Developer (Internship)"
+                date="Apr 2014 - Aug 2014"
+                description="Developed Windows Phone applications and ASP.NET MVC web solutions. Integrated Microsoft Dynamics CRM with custom workflows. Contributed to multiple enterprise projects using Microsoft stack."
+                delay="0"
+            ></job-card>
         </div>
     </div>
-
-    <!-- Contact Section -->
-    <footer class="footer footer-center p-10 bg-primary text-primary-content" id="contact">
-        <div data-aos="fade-up">
-            <p class="font-bold">Rodrigo Seiji Piubeli Hirao</p>
-            <p>rodrigo.seiji.hirao+site@gmail.com</p>
-        </div>
-    </footer>
 
     <!-- Scripts -->
+    <script src="/components/card.js"></script>
     <script>
         // Initialize everything
         async function initialize() {
@@ -220,41 +205,20 @@
                 const particlesConfig = await particlesResponse.json();
                 await tsParticles.load("tsparticles", particlesConfig);
 
-                // Load and render experience data
-                const experienceResponse = await fetch('/data/experience.json');
-                const experienceData = await experienceResponse.json();
-
                 // Load and render themes
                 const themesResponse = await fetch('/data/themes.json');
                 const themesData = await themesResponse.json();
                 const themesTemplate = Handlebars.compile(document.getElementById('themes-template').innerHTML);
                 document.querySelector('.dropdown-content').innerHTML = themesTemplate(themesData);
 
-                // Register Handlebars helpers
-                Handlebars.registerHelper('lowercase', function(str) {
-                    return str.toLowerCase().replaceAll(' ', '_');
+                // Ensure cards are visible
+                document.querySelectorAll('card').forEach(card => {
+                    card.style.display = 'block';
                 });
-
-                // Compile and render the template
-                const template = Handlebars.compile(document.getElementById('experience-template').innerHTML);
-                document.querySelector('.timeline-container').innerHTML = template(experienceData);
-
-                // Initialize AOS for the experience elements
-                AOS.refresh();
             } catch (error) {
                 console.error('Error initializing the page:', error);
             }
         }
-
-        // Theme switcher function
-        function setTheme(theme) {
-            document.documentElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-        }
-
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme') || 'mocha';
-        setTheme(savedTheme);
 
         // Start initialization
         initialize();
