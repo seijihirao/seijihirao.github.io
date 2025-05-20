@@ -1,0 +1,61 @@
+job-card {
+    display: block !important;
+    width: 100%;
+    aspect-ratio: 1/1.5;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+    job-card {
+        position: absolute;
+        bottom: 2rem;
+        right: 2rem;
+        width: 240px;
+        transform-origin: bottom right;
+        transition: all 0.8s ease;
+        z-index: 1;
+    }
+    job-card:hover:not(.centered) {
+        scale: 1.5;
+    }
+    job-card.centered {
+        right: calc(100vw - 10rem - var(--centered-offset, 0));
+        bottom: 5rem;
+        transform: translate(100%, calc(var(--centered-offset, 0) * -1)) scale(1.5) !important;
+        rotate: 0deg !important;
+        z-index: 100;
+    }
+}
+
+.preserve-3d {
+    transform-style: preserve-3d;
+}
+.backface-hidden {
+    backface-visibility: hidden;
+}
+.rotate-y-180 {
+    transform: rotateY(180deg);
+}
+.flipped .front-face {
+    transform: rotateY(180deg);
+}
+.flipped .back-face {
+    transform: rotateY(0deg);
+}
+.front-face, .back-face {
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0.4; transform: translateY(100px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: var(--delay, 0ms);
+    opacity: 0;
+}
