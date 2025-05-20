@@ -1,4 +1,5 @@
 job-card {
+    position: relative;
     display: block !important;
     width: 100%;
     aspect-ratio: 1/1.5;
@@ -25,7 +26,7 @@ job-card {
         bottom: 5rem;
         transform: translate(100%, calc(var(--centered-offset, 0) * -1)) scale(1.5) !important;
         rotate: 0deg !important;
-        z-index: 100;
+        z-index: calc(100 + var(--z-index, 0))!important;
     }
 }
 

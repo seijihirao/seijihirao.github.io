@@ -26,9 +26,11 @@ class JobCard extends HTMLElement {
         const translateY = parseInt(delay) / 20; // Gradual vertical offset
         const translateX = parseInt(delay) / 10; // Add horizontal offset
         const centeredOffset = parseInt(delay) / 8; // 1rem = 16px, offset based on delay
+        const zIndex = parseInt(delay) / 100;
         this.style.setProperty('--rotation', `${rotation}deg`);
         this.style.setProperty('--delay', `${delay}ms`);
         this.style.setProperty('--centered-offset', `${centeredOffset}px`);
+        this.style.setProperty('--z-index', zIndex);
 
         // Add HTML content
         this.innerHTML = `
