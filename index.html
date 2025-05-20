@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" x-data="{ theme: localStorage.getItem('theme') || 'mocha' }" :data-theme="theme">
+<html lang="en" x-data="{ theme: localStorage.getItem('theme') || 'mocha' }" :data-theme="theme" @theme-changed.window="theme = $event.detail">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,9 +41,6 @@
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.9.3/tsparticles.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles-slim@2.9.3/tsparticles-slim.bundle.min.js"></script>
 
-    <!-- Handlebars -->
-    <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.8/dist/handlebars.min.js"></script>
-
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -69,16 +66,20 @@
                     <i class="ri-palette-line text-xl"></i>
                 </div>
                 <ul tabindex="0" class="dropdown-content z-[9999] menu p-2 shadow bg-base-100 rounded-box w-96">
-                    <script id="themes-template" type="text/x-handlebars-template">
-                        <div class="grid grid-cols-2 gap-2">
-                            {{#each themes}}
-                            <li><button @click="theme = '{{name}}'; localStorage.setItem('theme', '{{name}}')" class="flex items-center gap-2">
-                                <i class="{{icon}}"></i>
-                                {{label}}
-                            </button></li>
-                            {{/each}}
-                        </div>
-                    </script>
+                    <div class="grid grid-cols-2 gap-2" x-data="{ themeList: [] }" x-init="
+                        fetch('/data/themes.json')
+                            .then(response => response.json())
+                            .then(data => themeList = data.themes)
+                    ">
+                        <template x-for="themeItem in themeList" :key="themeItem.name">
+                            <li>
+                                <button @click="$dispatch('theme-changed', themeItem.name); localStorage.setItem('theme', themeItem.name)" class="flex items-center gap-2">
+                                    <i :class="themeItem.icon"></i>
+                                    <span x-text="themeItem.label"></span>
+                                </button>
+                            </li>
+                        </template>
+                    </div>
                 </ul>
             </div>
         </div>
@@ -207,17 +208,6 @@
                 const particlesResponse = await fetch('/data/particles.json');
                 const particlesConfig = await particlesResponse.json();
                 await tsParticles.load("tsparticles", particlesConfig);
-
-                // Load and render themes
-                const themesResponse = await fetch('/data/themes.json');
-                const themesData = await themesResponse.json();
-                const themesTemplate = Handlebars.compile(document.getElementById('themes-template').innerHTML);
-                document.querySelector('.dropdown-content').innerHTML = themesTemplate(themesData);
-
-                // Ensure cards are visible
-                document.querySelectorAll('card').forEach(card => {
-                    card.style.display = 'block';
-                });
             } catch (error) {
                 console.error('Error initializing the page:', error);
             }
