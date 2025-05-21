@@ -1,0 +1,66 @@
+.photo-container {
+    opacity: 0;
+    transform: translateX(-100%);
+}
+
+.photo-container.right {
+    transform: translateX(100%);
+}
+
+.together-photos {
+    opacity: 0;
+    transform: scale(0.5);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.marriage-photos {
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+.trip-photo {
+    position: absolute;
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    border: 3px solid white;
+    z-index: 1;
+}
+
+.trip-photo:hover {
+    transform: scale(1.1) rotate(0deg) !important;
+    z-index: 10;
+}
+
+.polaroid {
+    background: white;
+    padding: 1rem 1rem 2rem 1rem;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: rotate(var(--rotation));
+    transition: transform 0.3s ease;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.polaroid:hover {
+    transform: rotate(0deg) scale(1.05);
+    z-index: 10;
+}
+
+.polaroid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 1rem;
+    aspect-ratio: 1;
+} 
