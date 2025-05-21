@@ -1,0 +1,33 @@
+@keyframes gentle-pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+@keyframes gentle-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes gentle-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-gentle-pulse {
+    animation: gentle-pulse 3s ease-in-out infinite;
+}
+
+.animate-gentle-fade {
+    animation: gentle-fade 1.5s ease-out;
+}
+
+.animate-gentle-slide-up {
+    animation: gentle-slide-up 1.5s ease-out;
+} 

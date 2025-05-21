@@ -1,0 +1,25 @@
+.scene {
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Add styles for scroll lock */
+body.scroll-locked {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    #trip-photos {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding: 1rem;
+        height: auto;
+        min-height: 100vh;
+    }
+} 
