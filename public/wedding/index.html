@@ -9,6 +9,20 @@
     <title>Fla & Seiji - Our Wedding</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'dancing': ['Dancing Script', 'cursive'],
+                        'great-vibes': ['Great Vibes', 'cursive'],
+                        'playfair': ['Playfair Display', 'serif'],
+                        'cormorant': ['Cormorant Garamond', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
@@ -19,12 +33,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.8/plugins/animation.gsap.min.js"></script>
     <!-- Add YouTube IFrame API -->
     <script src="https://www.youtube.com/iframe_api"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link href="styles/flip-cards.css" rel="stylesheet">
     <link href="styles/animations.css" rel="stylesheet">
     <link href="styles/layout.css" rel="stylesheet">
     <link href="styles/photos.css" rel="stylesheet">
     <link href="styles/envelope.css" rel="stylesheet">
+        <style>
+            /* Animation for gentle pulse */
+            @keyframes gentle-pulse {
+                0%, 100% {
+                    transform: scale(1);
+                    opacity: 0.8;
+                }
+                50% {
+                    transform: scale(1.05);
+                    opacity: 1;
+                }
+            }
+
+        </style>
 </head>
 <body class="bg-base-100 overflow-x-hidden" x-data="weddingApp" :class="{ 'scroll-locked': !envelopeOpen }">
     <!-- Background Music -->
@@ -43,14 +71,56 @@
     <div id="tsparticles-celebration" class="fixed inset-0 w-full h-full z-[1001] pointer-events-none opacity-0 transition-opacity duration-500" :class="{ 'opacity-100': envelopeOpen }"></div>
 
     <!-- Envelope -->
-    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[200px] cursor-pointer z-[1000] transition-all duration-500 ease-in-out" 
+    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[240px] cursor-pointer z-[1000] transition-all duration-500 ease-in-out" 
          :class="{ 'opacity-0 scale-50 pointer-events-none': envelopeOpen }"
          @click="envelopeOpen = true">
-        <div class="relative w-full h-full bg-base-100 border-2 border-primary/50 rounded-lg overflow-hidden group shadow-2xl hover:shadow-primary/20 transition-shadow duration-300">
-            <div class="absolute inset-0 bg-secondary envelope-flap border-b-2 border-primary/30 origin-top transition-transform duration-300 ease-in-out group-hover:rotate-x-180"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <i class="ri-heart-3-fill text-6xl text-error drop-shadow-lg"></i>
+        
+        <!-- Invitation Content -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[80%] z-10">
+            <div class="w-full h-full border-2 border-slate-300/40 rounded-md bg-gradient-to-br from-white/70 via-slate-50/60 to-white/70 backdrop-blur-sm flex items-center justify-center relative overflow-hidden">
+                <!-- Background decoration -->
+                <div class="absolute inset-0 bg-gradient-to-br from-pink-100/10 via-transparent to-rose-100/10 pointer-events-none"></div>
+                
+                <div class="text-center text-slate-700 relative z-10">
+                    <div class="text-sm font-semibold tracking-wider mb-2 text-slate-600 uppercase" style="font-family: system-ui, -apple-system, sans-serif;">Convite de Casamento</div>
+                    <div class="text-3xl font-bold mb-2 bg-gradient-to-r from-pink-600 via-rose-500 to-pink-400 bg-clip-text text-transparent font-dancing">Fla & Seiji</div>
+                    <div class="text-sm font-normal mb-2 text-slate-600" style="font-family: system-ui, -apple-system, sans-serif;">Você está convidado para celebrar</div>
+                    <div class="text-xl mb-2 animate-pulse">💕</div>
+                    <div class="text-xs font-medium text-slate-500 uppercase tracking-wider mt-2" style="font-family: system-ui, -apple-system, sans-serif;">Clique para abrir</div>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Countdown Timer -->
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 z-[1000] transition-all duration-500 ease-in-out w-full" 
+        :class="{ 'bottom-[-100%]': envelopeOpen }">
+        <div class="text-center p-4 px-6 bg-white/95 backdrop-blur-lg border-2 border-slate-200/80 shadow-2xl w-full relative overflow-hidden">
+            <!-- Background decoration -->
+            <div class="absolute inset-0 bg-gradient-to-br from-pink-100/10 via-transparent to-rose-100/10 pointer-events-none"></div>
+            
+            <div class="flex items-center justify-center gap-4 mb-2 flex-wrap relative z-10" x-data="countdownTimer()" x-init="startCountdown()">
+                <div class="flex flex-col items-center min-w-[70px]">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-pink-600 via-rose-500 to-pink-400 bg-clip-text text-transparent font-dancing leading-none mb-1" x-text="days"></div>
+                    <div class="text-xs text-slate-500 font-medium uppercase tracking-wide" style="font-family: system-ui, -apple-system, sans-serif;">Dias</div>
+                </div>
+                <div class="text-3xl font-bold text-pink-500/60 font-dancing mx-2">:</div>
+                <div class="flex flex-col items-center min-w-[70px]">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-pink-600 via-rose-500 to-pink-400 bg-clip-text text-transparent font-dancing leading-none mb-1" x-text="hours"></div>
+                    <div class="text-xs text-slate-500 font-medium uppercase tracking-wide" style="font-family: system-ui, -apple-system, sans-serif;">Horas</div>
+                </div>
+                <div class="text-3xl font-bold text-pink-500/60 font-dancing mx-2">:</div>
+                <div class="flex flex-col items-center min-w-[70px]">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-pink-600 via-rose-500 to-pink-400 bg-clip-text text-transparent font-dancing leading-none mb-1" x-text="minutes"></div>
+                    <div class="text-xs text-slate-500 font-medium uppercase tracking-wide" style="font-family: system-ui, -apple-system, sans-serif;">Min</div>
+                </div>
+                <div class="text-3xl font-bold text-pink-500/60 font-dancing mx-2">:</div>
+                <div class="flex flex-col items-center min-w-[70px]">
+                    <div class="text-4xl font-bold bg-gradient-to-r from-pink-600 via-rose-500 to-pink-400 bg-clip-text text-transparent font-dancing leading-none mb-1" x-text="seconds"></div>
+                    <div class="text-xs text-slate-500 font-medium uppercase tracking-wide" style="font-family: system-ui, -apple-system, sans-serif;">Seg</div>
+                </div>
+            </div>
+            <div class="text-lg text-slate-600 font-semibold font-dancing relative z-10">5 de Dezembro de 2026</div>
         </div>
     </div>
 
@@ -61,10 +131,10 @@
             <div class="absolute bottom-20 left-0 right-0 text-center text-white drop-shadow-lg z-10">
                 <div class="flex items-center justify-center gap-4 mb-4">
                     <i class="ri-heart-3-line text-2xl text-white/80 animate-gentle-pulse"></i>
-                    <h1 class="text-6xl font-bold animate-gentle-fade">Fla & Seiji</h1>
+                    <h1 class="text-6xl font-bold animate-gentle-fade font-great-vibes tracking-wider">Fla & Seiji</h1>
                     <i class="ri-heart-3-line text-2xl text-white/80 animate-gentle-pulse"></i>
                 </div>
-                <p class="text-2xl animate-gentle-slide-up">Uma história de amor que transcende fronteiras</p>
+                <p class="text-2xl animate-gentle-slide-up font-playfair italic">Uma história de amor que transcende fronteiras</p>
             </div>
         </section>
 
@@ -81,10 +151,10 @@
             <div class="bottom-20 left-0 right-0 text-center">
                 <div class="flex items-center justify-center gap-4 mb-4">
                     <i class="ri-heart-3-line text-2xl text-primary/80 animate-gentle-pulse"></i>
-                    <h2 class="text-4xl font-bold text-primary animate-gentle-fade">Nossas Jornadas</h2>
+                    <h2 class="text-4xl font-bold text-primary animate-gentle-fade font-great-vibes tracking-wider">Nossas Jornadas</h2>
                     <i class="ri-heart-3-line text-2xl text-primary/80 animate-gentle-pulse"></i>
                 </div>
-                <p class="text-xl text-center max-w-2xl mx-auto text-base-content animate-gentle-slide-up">Dois caminhos que se cruzaram para criar uma história única de amor e cumplicidade</p>
+                <p class="text-xl text-center max-w-2xl mx-auto text-base-content animate-gentle-slide-up font-cormorant">Dois caminhos que se cruzaram para criar uma história única de amor e cumplicidade</p>
             </div>
         </section>
 
@@ -100,10 +170,10 @@
             <div class="bottom-20 left-0 right-0 text-center">
                 <div class="flex items-center justify-center gap-4 mb-4">
                     <i class="ri-heart-3-line text-2xl text-primary/80 animate-gentle-pulse"></i>
-                    <h2 class="text-4xl font-bold text-primary animate-gentle-fade">Momentos Especiais</h2>
+                    <h2 class="text-4xl font-bold text-primary animate-gentle-fade font-great-vibes tracking-wider">Momentos Especiais</h2>
                     <i class="ri-heart-3-line text-2xl text-primary/80 animate-gentle-pulse"></i>
                 </div>
-                <p class="text-xl text-center max-w-2xl mx-auto text-base-content animate-gentle-slide-up">Cada sorriso, cada abraço, cada momento compartilhado nos aproximou ainda mais</p>
+                <p class="text-xl text-center max-w-2xl mx-auto text-base-content animate-gentle-slide-up font-cormorant">Cada sorriso, cada abraço, cada momento compartilhado nos aproximou ainda mais</p>
             </div>
         </section>
 
@@ -130,10 +200,10 @@
             <div class="bottom-20 left-0 right-0 text-center">
                 <div class="flex items-center justify-center gap-4 mb-4">
                     <i class="ri-heart-3-line text-2xl text-primary/80 animate-gentle-pulse"></i>
-                    <h2 class="text-4xl font-bold text-primary animate-gentle-fade">Nossas Aventuras</h2>
+                    <h2 class="text-4xl font-bold text-primary animate-gentle-fade font-great-vibes tracking-wider">Nossas Aventuras</h2>
                     <i class="ri-heart-3-line text-2xl text-primary/80 animate-gentle-pulse"></i>
                 </div>
-                <p class="text-xl text-center max-w-2xl mx-auto text-base-content animate-gentle-slide-up">Juntos, exploramos o mundo e criamos memórias inesquecíveis</p>
+                <p class="text-xl text-center max-w-2xl mx-auto text-base-content animate-gentle-slide-up font-cormorant">Juntos, exploramos o mundo e criamos memórias inesquecíveis</p>
             </div>
         </section>
 
@@ -150,10 +220,10 @@
             <div class="absolute bottom-20 left-0 right-0 text-center">
                 <div class="flex items-center justify-center gap-4 mb-4">
                     <i class="ri-heart-3-line text-2xl text-primary/80 animate-gentle-pulse"></i>
-                    <h2 class="text-4xl font-bold text-primary animate-gentle-fade">Nosso Compromisso</h2>
+                    <h2 class="text-4xl font-bold text-primary animate-gentle-fade font-great-vibes tracking-wider">Nosso Compromisso</h2>
                     <i class="ri-heart-3-line text-2xl text-primary/80 animate-gentle-pulse"></i>
                 </div>
-                <p class="text-xl text-center max-w-2xl mx-auto text-base-content animate-gentle-slide-up">Um novo capítulo começa, repleto de amor, sonhos e promessas para o futuro</p>
+                <p class="text-xl text-center max-w-2xl mx-auto text-base-content animate-gentle-slide-up font-cormorant">Um novo capítulo começa, repleto de amor, sonhos e promessas para o futuro</p>
             </div>
         </section>
 
@@ -163,11 +233,11 @@
                 <img src="assets/marriage-ring.webp" alt="Marriage Ring" class="w-64 mx-auto mb-8">
                 <div class="flex items-center justify-center gap-4 mb-4">
                     <i class="ri-heart-3-line text-2xl text-primary/80 animate-gentle-pulse"></i>
-                    <h2 class="text-4xl font-bold text-primary">Para Sempre Juntos</h2>
+                    <h2 class="text-4xl font-bold text-primary font-great-vibes tracking-wider">Para Sempre Juntos</h2>
                     <i class="ri-heart-3-line text-2xl text-primary/80 animate-gentle-pulse"></i>
                 </div>
-                <p class="text-xl max-w-2xl mx-auto text-base-content mb-8">Um amor que transcende o tempo, unindo duas almas em uma jornada eterna de felicidade</p>
-                <p class="text-3xl font-bold text-error animate-gentle-pulse">Fla, eu te amo9 ❤️</p>
+                <p class="text-xl max-w-2xl mx-auto text-base-content mb-8 font-cormorant">Um amor que transcende o tempo, unindo duas almas em uma jornada eterna de felicidade</p>
+                <p class="text-3xl font-bold text-error animate-gentle-pulse font-dancing">Fla, eu te amo ❤️</p>
             </div>
         </section>
     </div>
