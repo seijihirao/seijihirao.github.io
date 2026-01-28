@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="/wedding/">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; media-src 'self' https:; connect-src 'self' https:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data: blob:; media-src 'self' https:; connect-src 'self' https:;">
     <link rel="icon" type="image/png" href="assets/monograma.png">
     <title>Save the Date - Fla & Seiji</title>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" /> -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -26,6 +26,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <script src="scripts/countdown.js"></script>
+    <script src="scripts/screenshot.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         @keyframes fade-in {
@@ -71,7 +72,7 @@
 
         .stamp {
             background: linear-gradient(145deg, #fdf5f0 0%, #f5e6da 100%);
-            border: 2px dashed #a0522d;
+            border: 2px dashed #c45a42;
             transform: rotate(-3deg);
         }
 
@@ -84,13 +85,22 @@
     </style>
 </head>
 <body class="bg-stone-100 min-h-screen flex items-center justify-center p-4">
-    <div class="postcard relative max-w-2xl w-full rounded-sm p-8 md:p-12 animate-fade-in min-h-[600px] md:min-h-[700px] flex flex-col justify-center">
+    <div class="postcard relative max-w-2xl w-full rounded-sm p-8 md:p-12 animate-fade-in min-h-[600px] md:min-h-[700px] flex flex-col justify-center"
+         x-data="savethedate">
+
+        <!-- Download Button -->
+        <button x-show="!capturing"
+                @click="$screenshot()"
+                class="absolute top-3 left-3 md:top-6 md:left-6 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-white hover:bg-stone-100 transition-colors cursor-pointer border border-stone-300 shadow-sm"
+                style="z-index: 50;">
+            <i class="ri-camera-line text-sm md:text-base text-[#c45a42]"></i>
+        </button>
 
         <!-- Stamp -->
         <div class="stamp absolute top-3 right-3 md:top-6 md:right-6 w-14 h-16 md:w-24 md:h-28 flex flex-col items-center justify-center rounded-sm animate-stamp">
-            <i class="ri-heart-3-fill text-xl md:text-4xl text-[#a0522d] mb-0.5 md:mb-1"></i>
-            <span class="text-[8px] md:text-xs text-[#b5734a] font-semibold tracking-wider">LOVE</span>
-            <span class="text-[6px] md:text-[10px] text-[#a0522d] mt-0.5 md:mt-1">2026</span>
+            <i class="ri-heart-3-fill text-xl md:text-4xl text-[#c45a42] mb-0.5 md:mb-1"></i>
+            <span class="text-[8px] md:text-xs text-[#d07a66] font-semibold tracking-wider">LOVE</span>
+            <span class="text-[6px] md:text-[10px] text-[#c45a42] mt-0.5 md:mt-1">2026</span>
         </div>
 
         <!-- Content -->
@@ -99,7 +109,7 @@
             <div class="mb-4 md:mb-6 text-center">
                 <div
                     class="w-28 md:w-36 h-28 md:h-36 mx-auto"
-                    style="background-color: #a0522d; -webkit-mask-image: url('assets/monograma.png'); mask-image: url('assets/monograma.png'); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center;"
+                    style="background-color: #c45a42; -webkit-mask-image: url('assets/monograma.png'); mask-image: url('assets/monograma.png'); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center;"
                     role="img"
                     aria-label="F & S Monogram"
                 ></div>
@@ -107,14 +117,14 @@
 
             <!-- Save the Date Header -->
             <div class="mb-4 md:mb-6 text-center">
-                <p class="text-sm md:text-base text-[#b5734a] uppercase tracking-[0.4em] font-medium" style="font-family: system-ui, -apple-system, sans-serif;">
+                <p class="text-sm md:text-base text-[#d07a66] uppercase tracking-[0.4em] font-medium" style="font-family: system-ui, -apple-system, sans-serif;">
                     Save the Date
                 </p>
             </div>
 
             <!-- Date -->
             <div class="text-center mb-6 md:mb-8">
-                <p class="text-2xl md:text-3xl font-bold text-[#a0522d] font-dancing mb-2">
+                <p class="text-2xl md:text-3xl font-bold text-[#c45a42] font-dancing mb-2">
                     5 de Dezembro de 2026
                 </p>
                 <p class="text-base md:text-lg text-stone-600 font-cormorant italic">
@@ -124,7 +134,7 @@
 
             <!-- Venue -->
             <div class="text-center">
-                <p class="text-lg md:text-xl font-semibold text-[#b5734a] font-cormorant mb-1">
+                <p class="text-lg md:text-xl font-semibold text-[#d07a66] font-cormorant mb-1">
                     Saint Jardin
                 </p>
                 <p class="text-xs md:text-sm text-stone-500 font-cormorant leading-relaxed">
@@ -143,27 +153,26 @@
         </div>
 
         <!-- Countdown -->
-        <div class="absolute bottom-3 right-3 md:bottom-6 md:right-6 z-10 text-right font-dancing"
-             x-data="countdown">
-            <div class="text-[9px] md:text-xs text-stone-400 uppercase tracking-wider mb-1">Faltam</div>
+        <div x-show="!capturing"
+             class="absolute bottom-3 right-3 md:bottom-6 md:right-6 z-10 text-right font-dancing">
             <div class="flex gap-2 md:gap-3 items-end">
                 <div class="text-center">
-                    <div class="text-lg md:text-2xl font-bold text-[#a0522d] leading-none" x-text="days">0</div>
+                    <div class="text-lg md:text-2xl font-bold text-[#c45a42] leading-none" x-text="days">0</div>
                     <div class="text-[7px] md:text-[10px] text-stone-400">dias</div>
                 </div>
                 <div class="text-sm md:text-lg text-stone-300 leading-none mb-0.5">:</div>
                 <div class="text-center">
-                    <div class="text-lg md:text-2xl font-bold text-[#a0522d] leading-none" x-text="hours">0</div>
+                    <div class="text-lg md:text-2xl font-bold text-[#c45a42] leading-none" x-text="hours">0</div>
                     <div class="text-[7px] md:text-[10px] text-stone-400">hrs</div>
                 </div>
                 <div class="text-sm md:text-lg text-stone-300 leading-none mb-0.5">:</div>
                 <div class="text-center">
-                    <div class="text-lg md:text-2xl font-bold text-[#a0522d] leading-none" x-text="mins">0</div>
+                    <div class="text-lg md:text-2xl font-bold text-[#c45a42] leading-none" x-text="mins">0</div>
                     <div class="text-[7px] md:text-[10px] text-stone-400">min</div>
                 </div>
                 <div class="text-sm md:text-lg text-stone-300 leading-none mb-0.5">:</div>
                 <div class="text-center">
-                    <div class="text-lg md:text-2xl font-bold text-[#a0522d] leading-none" x-text="secs">0</div>
+                    <div class="text-lg md:text-2xl font-bold text-[#c45a42] leading-none" x-text="secs">0</div>
                     <div class="text-[7px] md:text-[10px] text-stone-400">seg</div>
                 </div>
             </div>
