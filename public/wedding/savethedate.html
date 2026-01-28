@@ -25,6 +25,8 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="scripts/countdown.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         @keyframes fade-in {
             from { opacity: 0; transform: scale(0.95); }
@@ -137,6 +139,33 @@
                 <p class="text-sm text-stone-500 font-cormorant tracking-wide">
                     Convite oficial em breve
                 </p>
+            </div>
+        </div>
+
+        <!-- Countdown -->
+        <div class="absolute bottom-3 right-3 md:bottom-6 md:right-6 z-10 text-right font-dancing"
+             x-data="countdown">
+            <div class="text-[9px] md:text-xs text-stone-400 uppercase tracking-wider mb-1">Faltam</div>
+            <div class="flex gap-2 md:gap-3 items-end">
+                <div class="text-center">
+                    <div class="text-lg md:text-2xl font-bold text-orange-700 leading-none" x-text="days">0</div>
+                    <div class="text-[7px] md:text-[10px] text-stone-400">dias</div>
+                </div>
+                <div class="text-sm md:text-lg text-stone-300 leading-none mb-0.5">:</div>
+                <div class="text-center">
+                    <div class="text-lg md:text-2xl font-bold text-orange-700 leading-none" x-text="hours">0</div>
+                    <div class="text-[7px] md:text-[10px] text-stone-400">hrs</div>
+                </div>
+                <div class="text-sm md:text-lg text-stone-300 leading-none mb-0.5">:</div>
+                <div class="text-center">
+                    <div class="text-lg md:text-2xl font-bold text-orange-700 leading-none" x-text="mins">0</div>
+                    <div class="text-[7px] md:text-[10px] text-stone-400">min</div>
+                </div>
+                <div class="text-sm md:text-lg text-stone-300 leading-none mb-0.5">:</div>
+                <div class="text-center">
+                    <div class="text-lg md:text-2xl font-bold text-orange-700 leading-none" x-text="secs">0</div>
+                    <div class="text-[7px] md:text-[10px] text-stone-400">seg</div>
+                </div>
             </div>
         </div>
     </div>
