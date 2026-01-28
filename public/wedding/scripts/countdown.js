@@ -1,9 +1,10 @@
 document.addEventListener('alpine:init', () => {
-    Alpine.data('countdown', () => ({
+    Alpine.data('savethedate', () => ({
         days: 0,
         hours: 0,
         mins: 0,
         secs: 0,
+        capturing: false,
 
         init() {
             const target = new Date('2026-12-05T00:00:00').getTime();
