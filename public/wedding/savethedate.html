@@ -27,6 +27,7 @@
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <script src="scripts/countdown.js"></script>
     <script src="scripts/screenshot.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -85,8 +86,9 @@
         }
     </style>
 </head>
-<body class="bg-stone-100 min-h-screen flex items-center justify-center p-4">
-    <div class="postcard relative max-w-2xl w-full rounded-sm p-8 md:p-12 animate-fade-in min-h-[600px] md:min-h-[700px] flex flex-col justify-center"
+<body class="bg-stone-100 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+    <div id="tsparticles-bg" class="fixed inset-0 pointer-events-none"></div>
+    <div class="postcard relative max-w-2xl w-full rounded-sm p-8 md:p-12 animate-fade-in min-h-[600px] md:min-h-[700px] flex flex-col justify-center" style="z-index: 1;"
          x-data="savethedate">
 
         <!-- Download Button -->
@@ -200,5 +202,41 @@
             </div>
         </div>
     </div>
+
+    <script>
+        tsParticles.load("tsparticles-bg", {
+            fullScreen: false,
+            particles: {
+                number: { value: 30, density: { enable: true, area: 800 } },
+                color: { value: ["#c45a42", "#d07a66", "#e8c4b8", "#d4a997"] },
+                shape: { type: "circle" },
+                opacity: {
+                    value: { min: 0.1, max: 0.4 },
+                    animation: { enable: true, speed: 0.5, minimumValue: 0.05, sync: false }
+                },
+                size: {
+                    value: { min: 1, max: 4 },
+                    animation: { enable: true, speed: 1, minimumValue: 0.5, sync: false }
+                },
+                move: {
+                    enable: true,
+                    speed: 0.3,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    outModes: "out",
+                    drift: 0.2,
+                },
+                links: { enable: false },
+            },
+            interactivity: {
+                events: {
+                    onHover: { enable: false },
+                    onClick: { enable: false },
+                },
+            },
+            detectRetina: true,
+        });
+    </script>
 </body>
 </html>
