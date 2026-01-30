@@ -20,12 +20,14 @@
                         'cormorant': ['Cormorant Garamond', 'serif'],
                         'josefin': ['Josefin Sans', 'sans-serif'],
                         'raleway': ['Raleway', 'sans-serif'],
+                        'baskerville': ['Libre Baskerville', 'serif'],
+                        'source-serif': ['Source Serif 4', 'serif'],
                     }
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <script src="scripts/countdown.js"></script>
@@ -53,8 +55,9 @@
 
         .postcard {
             background:
-                linear-gradient(135deg, rgba(254,254,254,0.85) 0%, rgba(250,248,245,0.8) 50%, rgba(245,243,237,0.85) 100%),
-                url('assets/aquarela-sm.jpg');
+                linear-gradient(135deg, rgba(254,254,254,0.85) 0%, rgba(250,248,245,0.8) 50%, rgba(245,243,237,0.1) 100%),
+                url('assets/aquarela-sm.jpg'),
+                rgba(254,254,254, 1);
             background-size: cover, contain;
             background-position: center, center bottom;
             background-repeat: no-repeat, no-repeat;
@@ -86,9 +89,9 @@
         }
     </style>
 </head>
-<body class="bg-stone-100 min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="bg-stone-100 min-h-screen flex items-center justify-center p-4 relative"> 
     <div id="tsparticles-bg" class="fixed inset-0 pointer-events-none"></div>
-    <div class="postcard relative max-w-2xl w-full rounded-sm p-8 md:p-12 animate-fade-in min-h-[600px] md:min-h-[700px] flex flex-col justify-center" style="z-index: 1;"
+    <div class="postcard relative max-w-2xl w-full rounded-sm p-6 pt-16 pb-14 md:p-12 animate-fade-in min-h-[520px] md:min-h-[700px] flex flex-col justify-center" style="z-index: 1;"
          x-data="savethedate">
 
         <!-- Download Button -->
@@ -100,7 +103,7 @@
         </button>
 
         <!-- Stamp -->
-        <div class="stamp absolute top-3 right-3 md:top-6 md:right-6 animate-stamp">
+        <div class="stamp absolute top-3 right-12 md:top-6 md:right-6 animate-stamp">
             <svg class="w-14 h-[4.4rem] md:w-20 md:h-24" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <mask id="stamp-perf">
@@ -123,16 +126,16 @@
         </div>
 
         <!-- Postmark -->
-        <div class="absolute top-4 right-16 md:top-8 md:right-24 animate-fade-in" style="animation-delay: 1s; opacity: 0;">
-            <img src="assets/postmark.svg" class="w-24 h-14 md:w-32 md:h-20" style="transform: rotate(-15deg);" alt="Postmark">
+        <div class="absolute top-1 right-12 md:top-8 md:right-24 animate-fade-in" style="animation-delay: 1s; opacity: 0;">
+            <img src="assets/postmark.svg" class="w-20 h-12 md:w-32 md:h-20" style="transform: rotate(-15deg);" alt="Postmark">
         </div>
 
         <!-- Content -->
         <div>
             <!-- Monogram -->
-            <div class="mb-4 md:mb-6 text-center">
+            <div class="mb-2 md:mb-6 text-center">
                 <div
-                    class="w-28 md:w-36 h-28 md:h-36 mx-auto"
+                    class="w-20 md:w-36 h-20 md:h-36 mx-auto"
                     style="background-color: #c45a42; -webkit-mask-image: url('assets/monograma.png'); mask-image: url('assets/monograma.png'); -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center;"
                     role="img"
                     aria-label="F & S Monogram"
@@ -140,28 +143,28 @@
             </div>
 
             <!-- Save the Date Header -->
-            <div class="mb-4 md:mb-6 text-center">
-                <p class="text-base md:text-lg text-[#d07a66] uppercase tracking-[0.4em] font-medium" style="font-family: system-ui, -apple-system, sans-serif;">
+            <div class="mb-2 md:mb-6 text-center">
+                <p class="text-sm md:text-lg text-[#d07a66] uppercase tracking-[0.3em] md:tracking-[0.4em] font-medium" style="font-family: system-ui, -apple-system, sans-serif;">
                     Save the Date
                 </p>
             </div>
 
             <!-- Date -->
-            <div class="text-center mb-6 md:mb-8">
-                <p class="text-3xl md:text-4xl font-semibold text-[#c45a42] font-josefin mb-2">
+            <div class="text-center mb-4 md:mb-8">
+                <p class="text-2xl md:text-4xl font-semibold text-[#c45a42] font-baskerville mb-1 md:mb-2">
                     5 de Dezembro de 2026
                 </p>
-                <p class="text-lg md:text-xl text-stone-700 font-raleway italic">
+                <p class="text-lg md:text-xl text-stone-700 font-source-serif italic">
                     Sábado
                 </p>
             </div>
 
             <!-- Venue -->
             <div class="text-center">
-                <p class="text-xl md:text-2xl font-semibold text-[#d07a66] font-josefin mb-1">
+                <p class="text-lg md:text-2xl font-semibold text-[#d07a66] font-baskerville mb-1">
                     Saint Jardin
                 </p>
-                <p class="text-sm md:text-base text-stone-700 font-raleway leading-relaxed">
+                <p class="text-sm md:text-base text-stone-700 font-source-serif leading-relaxed">
                     Rua Estrada da Aparecida, 1330<br>
                     Km 125,5 da Rodovia Raposo Tavares<br>
                     Araçoiaba da Serra - SP
@@ -169,8 +172,8 @@
             </div>
 
             <!-- Footer Message -->
-            <div class="mt-6 md:mt-8 text-center">
-                <p class="text-base text-stone-700 font-raleway tracking-wide">
+            <div class="mt-4 md:mt-8 text-center">
+                <p class="text-base text-stone-700 font-cormorant tracking-wide">
                     Convite oficial em breve
                 </p>
             </div>

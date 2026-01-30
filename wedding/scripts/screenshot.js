@@ -27,8 +27,8 @@ document.addEventListener('alpine:init', () => {
                 const ctx = canvas.getContext('2d');
                 ctx.scale(scale, scale);
 
-                // Background color
-                ctx.fillStyle = '#f5f3ed';
+                // Background color (matches CSS: rgba(254,254,254,1))
+                ctx.fillStyle = '#fefefe';
                 ctx.fillRect(0, 0, rect.width, rect.height);
 
                 // Draw aquarela background
@@ -57,7 +57,7 @@ document.addEventListener('alpine:init', () => {
                 const grad = ctx.createLinearGradient(0, 0, rect.width, rect.height);
                 grad.addColorStop(0, 'rgba(254,254,254,0.85)');
                 grad.addColorStop(0.5, 'rgba(250,248,245,0.8)');
-                grad.addColorStop(1, 'rgba(245,243,237,0.85)');
+                grad.addColorStop(1, 'rgba(245,243,237,0.1)');
                 ctx.globalAlpha = 1;
                 ctx.fillStyle = grad;
                 ctx.fillRect(0, 0, rect.width, rect.height);

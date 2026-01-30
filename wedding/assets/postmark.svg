@@ -1,16 +1,16 @@
 <svg viewBox="0 0 150 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Wavy lines to the left -->
+    <path d="M 4,32 Q 12,36 20,32 Q 28,28 36,32 Q 44,36 52,32" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1.5"/>
+    <path d="M 4,40 Q 12,44 20,40 Q 28,36 36,40 Q 44,44 52,40" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1.5"/>
+    <path d="M 4,48 Q 12,52 20,48 Q 28,44 36,48 Q 44,52 52,48" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1.5"/>
+    <path d="M 4,56 Q 12,60 20,56 Q 28,52 36,56 Q 44,60 52,56" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1.5"/>
+    <path d="M 4,64 Q 12,68 20,64 Q 28,60 36,64 Q 44,68 52,64" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1.5"/>
     <!-- Outer circle -->
-    <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="2"/>
+    <circle cx="100" cy="50" r="42" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="2"/>
     <!-- Inner circle -->
-    <circle cx="50" cy="50" r="36" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1"/>
+    <circle cx="100" cy="50" r="36" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1"/>
     <!-- Date text -->
-    <text x="50" y="47" text-anchor="middle" fill="rgba(180,100,50,0.5)" font-size="14" font-weight="700" font-family="monospace">05.12.26</text>
+    <text x="100" y="47" text-anchor="middle" fill="rgba(180,100,50,0.5)" font-size="14" font-weight="700" font-family="monospace">05.12.26</text>
     <!-- City text -->
-    <text x="50" y="60" text-anchor="middle" fill="rgba(180,100,50,0.4)" font-size="6" font-family="monospace" letter-spacing="1">SAINT JARDIN</text>
-    <!-- Wavy lines to the right -->
-    <path d="M 96,32 Q 104,36 112,32 Q 120,28 128,32 Q 136,36 144,32" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1.5"/>
-    <path d="M 96,40 Q 104,44 112,40 Q 120,36 128,40 Q 136,44 144,40" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1.5"/>
-    <path d="M 96,48 Q 104,52 112,48 Q 120,44 128,48 Q 136,52 144,48" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1.5"/>
-    <path d="M 96,56 Q 104,60 112,56 Q 120,52 128,56 Q 136,60 144,56" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1.5"/>
-    <path d="M 96,64 Q 104,68 112,64 Q 120,60 128,64 Q 136,68 144,64" fill="none" stroke="rgba(180,100,50,0.4)" stroke-width="1.5"/>
+    <text x="100" y="60" text-anchor="middle" fill="rgba(180,100,50,0.4)" font-size="6" font-family="monospace" letter-spacing="1">SAINT JARDIN</text>
 </svg>
