@@ -33,7 +33,7 @@ document.addEventListener('alpine:init', () => {
 
                 // Draw aquarela background
                 try {
-                    const aquarela = await loadImage('assets/aquarela.png');
+                    const aquarela = await loadImage('assets/aquarela-sm.jpg');
                     const aw = aquarela.naturalWidth;
                     const ah = aquarela.naturalHeight;
                     // contain: fit inside rect keeping aspect ratio, centered at bottom
