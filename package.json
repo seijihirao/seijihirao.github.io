@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "serve public",
-    "build": "echo 'No build step needed'",
+    "start": "node public/boardgames/scripts/generate-config.js && serve public",
+    "build": "node public/boardgames/scripts/generate-config.js",
     "test": "echo 'No tests configured'"
   },
   "dependencies": {

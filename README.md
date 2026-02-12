@@ -17,7 +17,7 @@ Seiji's personal website showcasing professional experience and skills.
 ## DEVELOPMENT
 
 ### Prerequisites
-* [NodeJS with NPM](https://nodejs.org/) - Install from the official site or your package manager
+* [NodeJS with NPM](https://nodejs.org/) - Install from the official site or your package manager.
 
 ### Installation
 ```bash

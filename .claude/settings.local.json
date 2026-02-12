@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(curl:*)",
-      "Bash(sips:*)"
+      "Bash(sips:*)",
+      "WebFetch(domain:docs.google.com)"
     ]
   }
 }

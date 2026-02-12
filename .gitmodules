@@ -1,0 +1,3 @@
+[submodule "public/boardgames"]
+	path = public/boardgames
+	url = git@github.com:seijihirao/boardgames.git
