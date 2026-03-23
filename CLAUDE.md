@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Personal website (seiji.life) — static site served from `public/`. Includes a main portfolio page and a boardgames library sub-app.
+Personal website (seiji.life) — static site served from `public/`. Includes a main portfolio page and multiple sub-pages (boardgames, shizen, wedding, etc.), each as a self-contained static app in its own directory.
 
 ## Tech Stack
 
@@ -27,13 +27,8 @@ public/                  # Static site root (served directly)
 ├── assets/              # Static assets (images, fonts, etc.)
 ├── components/          # Reusable JS/CSS components (card.js, card.css)
 ├── data/                # JSON config files (AOS, particles, tailwind, themes)
-├── boardgames/          # Board games library sub-app
-│   ├── scripts/         # Build scripts (generate-config.js)
-│   ├── index.html
-│   ├── privacy.html
-│   └── terms.html
-├── shizen/              # Sub-page
-└── wedding/             # Sub-page
+└── <name>/              # Sub-pages (boardgames, shizen, wedding, etc.)
+    └── index.html       # Each sub-page is a self-contained static app
 package.json             # Project config & scripts
 tsconfig.json            # TypeScript config
 ```
