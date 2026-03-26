@@ -442,7 +442,8 @@
         const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
         const W = 210, H = 297, M = 16, R = 1.5, GAP = 8;
         const CW = (W - 2 * M - GAP) / 2;
-        const LINE_H = 4.8;
+        const LINE_H = 5.5;   // page 1 (12pt body)
+        const LINE_H2 = 4.2;  // page 2 (9pt body)
 
         function val(id) { return (document.getElementById(id)?.value || '').trim(); }
         function selVal(id) {
@@ -530,24 +531,23 @@
           color = color || BLUE;
           if (bgColor) {
             doc.setFillColor(...bgColor);
-            doc.roundedRect(x, sy - 5, w, 8.5, 1.2, 1.2, 'F');
+            doc.roundedRect(x, sy - 5.5, w, 9, 1.2, 1.2, 'F');
           }
           doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(...color);
-          doc.text(title.toUpperCase(), x + (bgColor ? 2.5 : 0), sy);
+          doc.text(title.toUpperCase(), x + (bgColor ? 3 : 0), sy);
           if (!bgColor) hLine(x, x + w, sy + 2, color);
-          return sy + (bgColor ? 8 : 8);
+          return sy + (bgColor ? 9 : 9);
         }
 
         // ===== Bullet list item =====
         function bulletItem(x, sy, text, maxW, fontSize) {
           doc.setFontSize(fontSize || 12);
-          const lines = doc.splitTextToSize(text, maxW - 6);
-          const h = lines.length * LINE_H + 1.5;
+          const lines = doc.splitTextToSize(text, maxW - 7);
+          const h = lines.length * LINE_H + 2.5;
           doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
-          doc.text(lines, x + 4, sy);
-          // small dot
+          doc.text(lines, x + 5, sy);
           doc.setFillColor(...LABEL);
-          doc.circle(x + 1.2, sy - 1, 0.6, 'F');
+          doc.circle(x + 1.5, sy - 1.2, 0.8, 'F');
           return h;
         }
 
@@ -607,7 +607,7 @@
         // Bottom rule of header
         hLine(0, W, hdrH, RULE);
 
-        y = hdrH + 8;
+        y = hdrH + 10;
 
         // --- TWO COLUMN CONTENT ---
         const LX = M, RX = M + CW + GAP;
@@ -624,7 +624,7 @@
         } else {
           doencaItems.forEach(d => { ly += bulletItem(LX, ly, d, maxItemW); });
         }
-        ly += 7;
+        ly += 9;
 
         // Medicamentos
         ly = section(LX, ly, CW, 'Medicamentos', [255,255,255], BLUE);
@@ -635,13 +635,13 @@
           meds.forEach(m => {
             doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(...TEXT);
             const label = m.nome + (m.dose ? '  —  ' + m.dose : '');
-            const lines = doc.splitTextToSize(label, maxItemW - 6);
-            doc.setFillColor(...LABEL); doc.circle(LX + 1.2, ly - 1, 0.6, 'F');
-            doc.text(lines, LX + 4, ly);
-            ly += lines.length * LINE_H + 1;
+            const lines = doc.splitTextToSize(label, maxItemW - 7);
+            doc.setFillColor(...LABEL); doc.circle(LX + 1.5, ly - 1.2, 0.8, 'F');
+            doc.text(lines, LX + 5, ly);
+            ly += lines.length * LINE_H + 2;
           });
         }
-        ly += 7;
+        ly += 9;
 
         // Historico
         const histItems = [
@@ -660,10 +660,10 @@
             const lines = doc.splitTextToSize(combined, maxItemW);
             doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
             doc.text(lines, LX, ly);
-            ly += lines.length * LINE_H + 1.5;
+            ly += lines.length * LINE_H + 2;
           });
         }
-        ly += 7;
+        ly += 9;
 
         // ===== RIGHT COLUMN =====
 
@@ -677,13 +677,13 @@
           alergiaEntries.forEach(a => {
             doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(...RED);
             doc.text(a[0], RX, ry);
-            ry += 4;
+            ry += 5;
             doc.setFontSize(12); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
             const lines = doc.splitTextToSize(a[1], CW);
             doc.text(lines, RX, ry);
-            ry += lines.length * LINE_H + 2.5;
+            ry += lines.length * LINE_H + 3;
           });
-          ry += 5;
+          ry += 7;
         }
 
         // Exames
@@ -697,7 +697,7 @@
             ry += bulletItem(RX, ry, label, CW);
           });
         }
-        ry += 7;
+        ry += 9;
 
         // Vacinas
         const vacinas = [
@@ -716,7 +716,7 @@
             ry += bulletItem(RX, ry, combined, CW);
           });
         }
-        ry += 7;
+        ry += 9;
 
         // Medicos
         ry = section(RX, ry, CW, 'Medicos', [255,255,255], BLUE);
@@ -729,13 +729,13 @@
             ry += bulletItem(RX, ry, label, CW);
           });
         }
-        ry += 7;
+        ry += 9;
 
         // Observacoes — full width, below columns, only if fits
         const obsText = val('observacoes');
         const maxFooterY = H - 16;
         if (obsText) {
-          const obsY = Math.max(ly, ry) + 2;
+          const obsY = Math.max(ly, ry) + 4;
           const fullW = W - 2 * M;
           doc.setFontSize(12);
           const obsLines = doc.splitTextToSize(obsText, fullW);
@@ -781,7 +781,7 @@
         function dVal(x, vy, value, maxW) {
           doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
           const lines = doc.splitTextToSize(value || '—', maxW);
-          doc.text(lines, x, vy); return vy + lines.length * LINE_H + 2;
+          doc.text(lines, x, vy); return vy + lines.length * LINE_H2 + 2;
         }
         function dTH(x, ty, cols, w) {
           doc.setFillColor(...BG_LIGHT);
@@ -796,7 +796,7 @@
           doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
           let ml = 1;
           const cl = cols.map(c => { const l = doc.splitTextToSize(row[c.key] || '', c.w - 3); if (l.length > ml) ml = l.length; return l; });
-          const rh = ml * LINE_H + 2.5;
+          const rh = ml * LINE_H2 + 2.5;
           let cx = x + 2;
           cl.forEach((l, i) => { doc.text(l, cx, ty + 4); cx += cols[i].w; });
           hLine(x, x + w, ty + rh, RULE_LIGHT);
@@ -809,7 +809,7 @@
 
         ly = dTitle(LX2, ly, CW, 'Doencas ou Condicoes', BLUE);
         if (!doencaItems.length) { ly = dVal(LX2, ly, '—', CW); }
-        else { doencaItems.forEach(d => { doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT); const l = doc.splitTextToSize(d, CW - 8); doc.setFillColor(...LABEL); doc.circle(LX2 + 1.2, ly - 1, 0.5, 'F'); doc.text(l, LX2 + 4, ly); ly += l.length * LINE_H + 1; }); ly += 1; }
+        else { doencaItems.forEach(d => { doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT); const l = doc.splitTextToSize(d, CW - 8); doc.setFillColor(...LABEL); doc.circle(LX2 + 1.2, ly - 1, 0.5, 'F'); doc.text(l, LX2 + 4, ly); ly += l.length * LINE_H2 + 1; }); ly += 1; }
         ly += 6;
 
         ly = dTitle(LX2, ly, CW, 'Historico Medico', BLUE);
@@ -855,7 +855,7 @@
         [alergiaMed, alergiaAli, alergiaOutras].forEach((v, i) => {
           doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
           const l = doc.splitTextToSize(v || '—', aW - 2); doc.text(l, RX2 + i * aW, ar);
-          const b = ar + l.length * LINE_H; if (b > mAB) mAB = b;
+          const b = ar + l.length * LINE_H2; if (b > mAB) mAB = b;
         });
         ry = mAB + 6;
 
