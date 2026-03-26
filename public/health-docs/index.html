@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Saúde</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+
+    <style>
+      @media print { .no-print { display: none !important; } }
+      body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .animate-spin { animation: spin 1s linear infinite; }
+      #save-btn { transition: all 0.3s ease; }
+    </style>
+  </head>
+
+  <body data-theme="light" class="bg-slate-100 min-h-screen">
+
+    <!-- Toast notification -->
+    <div id="toast" class="hidden fixed bottom-4 right-4 px-4 py-2 rounded-lg shadow-lg text-white text-sm z-50"></div>
+
+    <!-- Top bar -->
+    <div class="no-print bg-gradient-to-r from-blue-700 to-blue-600 text-white px-5 py-3 flex items-center justify-between sticky top-0 z-50 shadow-lg">
+      <h1 class="text-lg font-bold tracking-wide">Ficha de Saúde</h1>
+
+      <!-- Ficha controls (visible when logged in) -->
+      <div id="ficha-controls" class="hidden flex items-center gap-2">
+        <select id="ficha-selector" class="select select-sm select-bordered text-gray-800 bg-white/90 h-8 min-h-0 text-sm">
+          <option value="">Nova ficha</option>
+        </select>
+        <button onclick="newFicha()" class="btn btn-sm btn-ghost text-white hover:bg-white/20 border-white/30" title="Nova ficha">
+          <i class="ri-add-line"></i>
+        </button>
+        <button id="save-btn" onclick="saveFicha()" class="btn btn-sm border-0 shadow transition-all duration-300 bg-white/20 text-white hover:bg-white/30" title="Salvar">
+          <i id="save-icon" class="ri-save-line"></i>
+          <span id="save-label">Salvar</span>
+        </button>
+        <button onclick="deleteFicha()" class="btn btn-sm btn-ghost text-white hover:bg-red-500/30 border-white/30" title="Excluir ficha">
+          <i class="ri-delete-bin-line"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="clearForm()" class="btn btn-sm btn-ghost text-white hover:bg-white/20 border-white/30">Limpar</button>
+        <button onclick="generatePDF()" class="btn btn-sm bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold border-0 shadow">Exportar PDF</button>
+
+        <!-- Auth: Login button -->
+        <button id="auth-login-btn" onclick="firebaseSignIn()" class="btn btn-sm btn-ghost text-white hover:bg-white/20 border-white/30">
+          <i class="ri-google-fill mr-1"></i> Entrar
+        </button>
+
+        <!-- Auth: User menu (hidden until logged in) -->
+        <div id="auth-user-menu" class="hidden dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-sm btn-ghost btn-circle avatar">
+            <img id="auth-user-avatar" class="hidden w-8 h-8 rounded-full" alt="avatar" referrerpolicy="no-referrer">
+          </label>
+          <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-lg bg-base-100 rounded-box w-52 mt-2">
+            <li class="menu-title"><span id="auth-user-name" class="text-gray-700"></span></li>
+            <li><a onclick="firebaseSignOut()" class="text-gray-700"><i class="ri-logout-box-line"></i> Sair</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form container: A4-like proportions -->
+    <div class="max-w-[210mm] mx-auto my-6 bg-white shadow-xl rounded-lg overflow-hidden" id="ficha-form">
+      <div class="p-5">
+
+        <!-- Header / 1. Identificação -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg p-4 mb-4 shadow-sm">
+          <h2 class="text-lg font-bold text-white tracking-wide mb-3">Ficha de Saúde</h2>
+          <div class="grid grid-cols-4 gap-x-3 gap-y-2">
+            <div class="col-span-2">
+              <label class="block text-xs font-semibold text-blue-200 mb-1">Nome completo</label>
+              <input id="nome" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-white/90 focus:bg-white">
+              <input id="header-nome" type="hidden">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-blue-200 mb-1">Data de Nascimento</label>
+              <input id="nascimento" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-white/90 focus:bg-white" placeholder="DD/MM/AAAA">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-blue-200 mb-1">Sexo</label>
+              <select id="sexo" class="select select-bordered select-sm w-full h-8 text-sm bg-white/90 focus:bg-white">
+                <option value="">Selecione</option>
+                <option>Masculino</option>
+                <option>Feminino</option>
+                <option>Outro</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-blue-200 mb-1">Tipo sanguíneo</label>
+              <select id="tipo-sanguineo" class="select select-bordered select-sm w-full h-8 text-sm bg-white/90 focus:bg-white">
+                <option value="">Selecione</option>
+                <option>A+</option><option>A-</option>
+                <option>B+</option><option>B-</option>
+                <option>AB+</option><option>AB-</option>
+                <option>O+</option><option>O-</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-blue-200 mb-1">CPF / RG</label>
+              <input id="cpf" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-white/90 focus:bg-white">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-blue-200 mb-1">Telefone</label>
+              <input id="telefone" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-white/90 focus:bg-white">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-blue-200 mb-1">CNS</label>
+              <input id="cns" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-white/90 focus:bg-white">
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Convênio (right-aligned watermark header) -->
+        <div class="flex justify-end items-center gap-3 mb-3 text-xs text-gray-400">
+          <span class="font-semibold text-gray-500">Convênio:</span>
+          <div class="flex items-center gap-1">
+            <label class="font-semibold">Plano</label>
+            <input id="plano-nome" type="text" class="input input-bordered input-xs text-xs h-6 w-32 bg-gray-50/50 focus:bg-white">
+          </div>
+          <div class="flex items-center gap-1">
+            <label class="font-semibold">Carteirinha</label>
+            <input id="plano-carteirinha" type="text" class="input input-bordered input-xs text-xs h-6 w-28 bg-gray-50/50 focus:bg-white">
+          </div>
+          <div class="flex items-center gap-1">
+            <label class="font-semibold">Validade</label>
+            <input id="plano-validade" type="text" class="input input-bordered input-xs text-xs h-6 w-24 bg-gray-50/50 focus:bg-white">
+          </div>
+        </div>
+
+        <!-- Two-column layout -->
+        <div class="grid grid-cols-2 gap-x-4 gap-y-0">
+
+          <!-- LEFT COLUMN -->
+          <div class="space-y-3">
+            <!-- 4. Doencas -->
+            <div class="border border-gray-200 rounded-lg p-3 bg-white">
+              <div class="text-sm font-bold bg-blue-600 text-white px-3 py-1 rounded-md mb-2 shadow-sm">Doenças ou Condições de Saúde</div>
+              <div id="doencas-container"></div>
+              <button onclick="addDoencaRow()" class="no-print btn btn-xs btn-outline btn-primary mt-1">+ Condição</button>
+            </div>
+
+            <!-- 5. Historico -->
+            <div class="border border-gray-200 rounded-lg p-3 bg-white">
+              <div class="text-sm font-bold bg-blue-600 text-white px-3 py-1 rounded-md mb-2 shadow-sm">Histórico Médico Importante</div>
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 mb-1">Cirurgias Realizadas</label>
+                  <input id="cirurgias" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-gray-50 focus:bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 mb-1">Internações</label>
+                  <input id="internacoes" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-gray-50 focus:bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 mb-1">Doenças anteriores importantes</label>
+                  <input id="doencas-anteriores" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-gray-50 focus:bg-white">
+                </div>
+              </div>
+            </div>
+
+            <!-- 7. Medicamentos -->
+            <div class="border border-gray-200 rounded-lg p-3 bg-white">
+              <div class="text-sm font-bold bg-blue-600 text-white px-3 py-1 rounded-md mb-2 shadow-sm">Medicamentos de Uso Contínuo</div>
+              <div id="meds-container">
+                <div class="grid grid-cols-12 gap-1 mb-1 px-1">
+                  <div class="col-span-4 text-xs font-semibold text-gray-500">Medicamento</div>
+                  <div class="col-span-2 text-xs font-semibold text-gray-500">Dosagem</div>
+                  <div class="col-span-2 text-xs font-semibold text-gray-500">Horario</div>
+                  <div class="col-span-4 text-xs font-semibold text-gray-500">Motivo</div>
+                </div>
+              </div>
+              <button onclick="addMedRow()" class="no-print btn btn-xs btn-outline btn-primary mt-1">+ Medicamento</button>
+            </div>
+            <!-- 8. Medicos -->
+            <div class="border border-gray-200 rounded-lg p-3 bg-white">
+              <div class="text-sm font-bold bg-blue-600 text-white px-3 py-1 rounded-md mb-2 shadow-sm">Médicos que Acompanham</div>
+              <div id="docs-container">
+                <div class="grid grid-cols-12 gap-1 mb-1 px-1">
+                  <div class="col-span-4 text-xs font-semibold text-gray-500">Especialidade</div>
+                  <div class="col-span-4 text-xs font-semibold text-gray-500">Nome do médico</div>
+                  <div class="col-span-4 text-xs font-semibold text-gray-500">Telefone / Local</div>
+                </div>
+              </div>
+              <button onclick="addDocRow()" class="no-print btn btn-xs btn-outline btn-primary mt-1">+ Médico</button>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN -->
+          <div class="space-y-3">
+            <!-- 9. Exames -->
+            <div class="border border-gray-200 rounded-lg p-3 bg-white">
+              <div class="text-sm font-bold bg-blue-600 text-white px-3 py-1 rounded-md mb-2 shadow-sm">Exames Recentes</div>
+              <div id="exams-container">
+                <div class="grid grid-cols-12 gap-1 mb-1 px-1">
+                  <div class="col-span-3 text-xs font-semibold text-gray-500">Exame</div>
+                  <div class="col-span-2 text-xs font-semibold text-gray-500">Data</div>
+                  <div class="col-span-7 text-xs font-semibold text-gray-500">Resultado / Observação</div>
+                </div>
+              </div>
+              <button onclick="addExamRow()" class="no-print btn btn-xs btn-outline btn-primary mt-1">+ Exame</button>
+            </div>
+
+            <!-- 10. Vacinas -->
+            <div class="border border-gray-200 rounded-lg p-3 bg-white">
+              <div class="text-sm font-bold bg-teal-600 text-white px-3 py-1 rounded-md mb-2 shadow-sm">Vacinas Importantes</div>
+              <div class="space-y-2">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 mb-1">Gripe (ultima dose)</label>
+                  <input id="vacina-gripe" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-gray-50 focus:bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 mb-1">COVID-19</label>
+                  <input id="vacina-covid" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-gray-50 focus:bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 mb-1">Tetano</label>
+                  <input id="vacina-tetano" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-gray-50 focus:bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 mb-1">Outras</label>
+                  <input id="vacina-outras" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-gray-50 focus:bg-white">
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. Alergias -->
+            <div class="border border-gray-200 rounded-lg p-3 bg-white">
+              <div class="text-sm font-bold bg-red-500 text-white px-3 py-1 rounded-md mb-2 shadow-sm">Alergias</div>
+              <div class="grid grid-cols-3 gap-x-2 gap-y-2">
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 mb-1">Medicamentos</label>
+                  <input id="alergia-med" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-gray-50 focus:bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 mb-1">Alimentos</label>
+                  <input id="alergia-ali" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-gray-50 focus:bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-gray-500 mb-1">Outras</label>
+                  <input id="alergia-outras" type="text" class="input input-bordered input-sm w-full text-sm h-8 bg-gray-50 focus:bg-white">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11. Observações (full width footer) -->
+        <div class="border border-gray-200 rounded-lg p-3 bg-white mt-4">
+          <div class="text-sm font-bold bg-gray-600 text-white px-3 py-1 rounded-md mb-2 shadow-sm">Observações Gerais</div>
+          <textarea id="observacoes" class="textarea textarea-bordered w-full text-sm leading-snug bg-gray-50 focus:bg-white" rows="2" placeholder="Observações..."></textarea>
+        </div>
+
+        <!-- 2. Contato de Emergência (right-aligned footer) -->
+        <div class="flex justify-end mt-3">
+          <div class="inline-flex items-center gap-3 text-xs text-gray-500">
+            <span class="font-semibold">Contato de Emergência:</span>
+            <div class="flex items-center gap-1">
+              <label class="font-semibold">Nome</label>
+              <input id="emerg-nome" type="text" class="input input-bordered input-xs text-xs h-6 w-32 bg-gray-50 focus:bg-white">
+            </div>
+            <div class="flex items-center gap-1">
+              <label class="font-semibold">Parentesco</label>
+              <input id="emerg-parentesco" type="text" class="input input-bordered input-xs text-xs h-6 w-24 bg-gray-50 focus:bg-white">
+            </div>
+            <div class="flex items-center gap-1">
+              <label class="font-semibold">Tel</label>
+              <input id="emerg-telefone" type="text" class="input input-bordered input-xs text-xs h-6 w-28 bg-gray-50 focus:bg-white">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ===== Dynamic table rows =====
+      let medCount = 0, docCount = 0, examCount = 0, doencaCount = 0;
+
+      function addDoencaRow() {
+        doencaCount++;
+        const row = document.createElement('div');
+        row.className = 'mb-1 doenca-row';
+        row.innerHTML = `
+          <input class="input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white doenca-nome" type="text" placeholder="Doença ou condição...">
+        `;
+        document.getElementById('doencas-container').appendChild(row);
+      }
+
+      function addMedRow() {
+        medCount++;
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-12 gap-1 mb-1 med-row';
+        row.innerHTML = `
+          <input class="col-span-4 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white med-nome" type="text">
+          <input class="col-span-2 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white med-dose" type="text">
+          <input class="col-span-2 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white med-hora" type="text">
+          <input class="col-span-4 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white med-motivo" type="text">
+        `;
+        document.getElementById('meds-container').appendChild(row);
+      }
+
+      function addDocRow() {
+        docCount++;
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-12 gap-1 mb-1 doc-row';
+        row.innerHTML = `
+          <input class="col-span-4 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white doc-esp" type="text">
+          <input class="col-span-4 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white doc-nome" type="text">
+          <input class="col-span-4 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white doc-tel" type="text">
+        `;
+        document.getElementById('docs-container').appendChild(row);
+      }
+
+      function addExamRow() {
+        examCount++;
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-12 gap-1 mb-1 exam-row';
+        row.innerHTML = `
+          <input class="col-span-3 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white exam-nome" type="text">
+          <input class="col-span-2 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white exam-data" type="text">
+          <input class="col-span-7 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white exam-res" type="text">
+        `;
+        document.getElementById('exams-container').appendChild(row);
+      }
+
+      // Expose to window for module access
+      window.addDoencaRow = addDoencaRow;
+      window.addMedRow = addMedRow;
+      window.addDocRow = addDocRow;
+      window.addExamRow = addExamRow;
+
+      // Add default rows
+      for (let i = 0; i < 4; i++) addDoencaRow();
+      for (let i = 0; i < 5; i++) addMedRow();
+      for (let i = 0; i < 4; i++) addDocRow();
+      for (let i = 0; i < 4; i++) addExamRow();
+
+      // ===== Session Storage =====
+      const STORAGE_KEY = 'ficha-saude-data';
+
+      function saveToSession() {
+        const data = {};
+        // Simple fields
+        document.querySelectorAll('input[id], textarea[id], select[id]').forEach(el => {
+          data[el.id] = el.value;
+        });
+        // Table rows
+        data._doencas = [...document.querySelectorAll('.doenca-row')].map(r => ({
+          nome: r.querySelector('.doenca-nome')?.value || '',
+        }));
+        data._meds = [...document.querySelectorAll('.med-row')].map(r => ({
+          nome: r.querySelector('.med-nome')?.value || '',
+          dose: r.querySelector('.med-dose')?.value || '',
+          hora: r.querySelector('.med-hora')?.value || '',
+          motivo: r.querySelector('.med-motivo')?.value || '',
+        }));
+        data._docs = [...document.querySelectorAll('.doc-row')].map(r => ({
+          esp: r.querySelector('.doc-esp')?.value || '',
+          nome: r.querySelector('.doc-nome')?.value || '',
+          tel: r.querySelector('.doc-tel')?.value || '',
+        }));
+        data._exams = [...document.querySelectorAll('.exam-row')].map(r => ({
+          nome: r.querySelector('.exam-nome')?.value || '',
+          data: r.querySelector('.exam-data')?.value || '',
+          res: r.querySelector('.exam-res')?.value || '',
+        }));
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }
+
+      function loadFromSession() {
+        const raw = sessionStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        // Simple fields
+        document.querySelectorAll('input[id], textarea[id], select[id]').forEach(el => {
+          if (data[el.id] !== undefined) el.value = data[el.id];
+        });
+        // Table rows - add extra rows if needed
+        if (data._doencas) {
+          while (document.querySelectorAll('.doenca-row').length < data._doencas.length) addDoencaRow();
+          document.querySelectorAll('.doenca-row').forEach((r, i) => {
+            if (!data._doencas[i]) return;
+            r.querySelector('.doenca-nome').value = data._doencas[i].nome;
+          });
+        }
+        if (data._meds) {
+          while (document.querySelectorAll('.med-row').length < data._meds.length) addMedRow();
+          document.querySelectorAll('.med-row').forEach((r, i) => {
+            if (!data._meds[i]) return;
+            r.querySelector('.med-nome').value = data._meds[i].nome;
+            r.querySelector('.med-dose').value = data._meds[i].dose;
+            r.querySelector('.med-hora').value = data._meds[i].hora;
+            r.querySelector('.med-motivo').value = data._meds[i].motivo;
+          });
+        }
+        if (data._docs) {
+          while (document.querySelectorAll('.doc-row').length < data._docs.length) addDocRow();
+          document.querySelectorAll('.doc-row').forEach((r, i) => {
+            if (!data._docs[i]) return;
+            r.querySelector('.doc-esp').value = data._docs[i].esp;
+            r.querySelector('.doc-nome').value = data._docs[i].nome;
+            r.querySelector('.doc-tel').value = data._docs[i].tel;
+          });
+        }
+        if (data._exams) {
+          while (document.querySelectorAll('.exam-row').length < data._exams.length) addExamRow();
+          document.querySelectorAll('.exam-row').forEach((r, i) => {
+            if (!data._exams[i]) return;
+            r.querySelector('.exam-nome').value = data._exams[i].nome;
+            r.querySelector('.exam-data').value = data._exams[i].data;
+            r.querySelector('.exam-res').value = data._exams[i].res;
+          });
+        }
+      }
+
+      // Load saved data
+      loadFromSession();
+
+      // Auto-save on any input change
+      document.getElementById('ficha-form').addEventListener('input', saveToSession);
+
+      // ===== Clear form =====
+      function clearForm(keepSession) {
+        document.querySelectorAll('#ficha-form input, #ficha-form textarea, #ficha-form select').forEach(el => {
+          if (el.tagName === 'SELECT') el.selectedIndex = 0;
+          else el.value = '';
+        });
+        if (!keepSession) sessionStorage.removeItem(STORAGE_KEY);
+      }
+      window.clearForm = clearForm;
+
+      // ===== PDF Generation with jsPDF =====
+      function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        const W = 210, H = 297, M = 16, R = 1.5, GAP = 8;
+        const CW = (W - 2 * M - GAP) / 2;
+        const LINE_H = 4.8;
+
+        function val(id) { return (document.getElementById(id)?.value || '').trim(); }
+        function selVal(id) {
+          const el = document.getElementById(id);
+          if (!el) return '';
+          const txt = el.options[el.selectedIndex]?.text || '';
+          return txt === 'Selecione' ? '' : txt;
+        }
+
+        // Colors
+        const INK = [30, 30, 30], TEXT = [40, 40, 40], LABEL = [120, 120, 120];
+        const RULE = [200, 200, 200], RULE_LIGHT = [230, 230, 230];
+        const BG_LIGHT = [248, 248, 248];
+        const RED = [190, 40, 40];
+        const BLUE = [37, 99, 235], BLUE_LIGHT = [219, 234, 254];
+        const TEAL = [13, 148, 136], TEAL_LIGHT = [204, 251, 241];
+        const GRAY_SEC = [75, 85, 99], GRAY_LIGHT = [229, 231, 235];
+
+        function hLine(x1, x2, y, color) {
+          doc.setDrawColor(...(color || RULE));
+          doc.setLineWidth(0.25);
+          doc.line(x1, y, x2, y);
+        }
+
+        // ===== Collect all data =====
+        const headerName = val('header-nome') || val('nome');
+        const nascimento = val('nascimento');
+        const sexo = selVal('sexo');
+        const tipoSang = selVal('tipo-sanguineo');
+        const cpf = val('cpf');
+        const telefone = val('telefone');
+        const cns = val('cns');
+        const planoNome = val('plano-nome');
+        const planoCart = val('plano-carteirinha');
+        const planoVal = val('plano-validade');
+        const hasPlano = planoNome || planoCart;
+
+        const doencaItems = [...document.querySelectorAll('.doenca-row')]
+          .map(r => r.querySelector('.doenca-nome')?.value || '').filter(v => v.trim());
+        const meds = [...document.querySelectorAll('.med-row')].map(r => ({
+          nome: r.querySelector('.med-nome')?.value || '',
+          dose: r.querySelector('.med-dose')?.value || '',
+          hora: r.querySelector('.med-hora')?.value || '',
+          motivo: r.querySelector('.med-motivo')?.value || '',
+        })).filter(m => m.nome || m.dose || m.hora || m.motivo);
+        const doctors = [...document.querySelectorAll('.doc-row')].map(r => ({
+          esp: r.querySelector('.doc-esp')?.value || '',
+          nome: r.querySelector('.doc-nome')?.value || '',
+          tel: r.querySelector('.doc-tel')?.value || '',
+        })).filter(d => d.esp || d.nome || d.tel);
+        const exams = [...document.querySelectorAll('.exam-row')].map(r => ({
+          nome: r.querySelector('.exam-nome')?.value || '',
+          data: r.querySelector('.exam-data')?.value || '',
+          res: r.querySelector('.exam-res')?.value || '',
+        })).filter(e => e.nome || e.data || e.res);
+        const emergNome = val('emerg-nome');
+        const emergParent = val('emerg-parentesco');
+        const emergTel = val('emerg-telefone');
+        const alergiaMed = val('alergia-med');
+        const alergiaAli = val('alergia-ali');
+        const alergiaOutras = val('alergia-outras');
+        const hasAlergias = alergiaMed || alergiaAli || alergiaOutras;
+
+        // ===== Footer on every page =====
+        function drawFooter(pageNum, totalPages) {
+          const fy = H - 12;
+          hLine(M, W - M, fy, BLUE);
+          let fx = M;
+          if (emergNome || emergTel) {
+            doc.setFillColor(...RED);
+            doc.roundedRect(fx, fy + 1, 22, 5.5, 1, 1, 'F');
+            doc.setFontSize(7); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+            doc.text('EMERGENCIA', fx + 1.5, fy + 5);
+            fx += 24;
+            doc.setFontSize(8); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
+            const emergStr = [emergNome, emergParent ? '(' + emergParent + ')' : '', emergTel].filter(Boolean).join('  /  ');
+            doc.text(emergStr, fx, fy + 5);
+          }
+          doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(...LABEL);
+          doc.text(new Date().toLocaleDateString('pt-BR') + '   ' + pageNum + '/' + totalPages, W - M, fy + 5, { align: 'right' });
+        }
+
+        // ===== Section helper — colored badge title =====
+        function section(x, sy, w, title, color, bgColor) {
+          color = color || BLUE;
+          if (bgColor) {
+            doc.setFillColor(...bgColor);
+            doc.roundedRect(x, sy - 5, w, 8.5, 1.2, 1.2, 'F');
+          }
+          doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(...color);
+          doc.text(title.toUpperCase(), x + (bgColor ? 2.5 : 0), sy);
+          if (!bgColor) hLine(x, x + w, sy + 2, color);
+          return sy + (bgColor ? 8 : 8);
+        }
+
+        // ===== Bullet list item =====
+        function bulletItem(x, sy, text, maxW, fontSize) {
+          doc.setFontSize(fontSize || 12);
+          const lines = doc.splitTextToSize(text, maxW - 6);
+          const h = lines.length * LINE_H + 1.5;
+          doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
+          doc.text(lines, x + 4, sy);
+          // small dot
+          doc.setFillColor(...LABEL);
+          doc.circle(x + 1.2, sy - 1, 0.6, 'F');
+          return h;
+        }
+
+        // ================================================================
+        // PAGE 1 — SUMMARY
+        // ================================================================
+        let y = 0;
+
+        // --- HEADER ---
+        const hdrH = 42;
+        doc.setFillColor(...BLUE);
+        doc.rect(0, 0, W, hdrH, 'F');
+
+        // Title
+        doc.setFontSize(26); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+        doc.text('Ficha de Saude', M, 14);
+
+        // Name
+        if (headerName) {
+          doc.setFontSize(16); doc.setFont('helvetica', 'normal'); doc.setTextColor(220, 230, 255);
+          doc.text(headerName, M, 22);
+        }
+
+        // Blood type — white badge top-right
+        if (tipoSang) {
+          doc.setFillColor(255, 255, 255);
+          const bw = 20, bh = 16;
+          doc.roundedRect(W - M - bw, 3, bw, bh, 2, 2, 'F');
+          doc.setFontSize(20); doc.setFont('helvetica', 'bold'); doc.setTextColor(...RED);
+          doc.text(tipoSang, W - M - bw / 2, 12.5, { align: 'center' });
+          doc.setFontSize(6); doc.setFont('helvetica', 'normal'); doc.setTextColor(...LABEL);
+          doc.text('TIPO SANG.', W - M - bw / 2, 17, { align: 'center' });
+        }
+
+        // Info fields — single row, white on blue
+        const fields = [
+          ['Nascimento', nascimento], ['Sexo', sexo],
+          ['CPF / RG', cpf], ['Telefone', telefone],
+        ];
+        if (cns) fields.push(['CNS', cns]);
+        const fColW = (W - 2 * M) / fields.length;
+        fields.forEach((f, i) => {
+          const fx = M + i * fColW;
+          doc.setFontSize(8); doc.setFont('helvetica', 'normal'); doc.setTextColor(180, 200, 255);
+          doc.text(f[0], fx, 28);
+          doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+          doc.text(f[1] || '—', fx, 33);
+        });
+
+        // Plano de saude — subtle line under header fields
+        if (hasPlano) {
+          const planoStr = [planoNome, planoCart ? 'Cart: ' + planoCart : '', planoVal ? 'Val: ' + planoVal : ''].filter(Boolean).join('   ·   ');
+          doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(180, 200, 255);
+          doc.text(planoStr, M, 39);
+        }
+
+        // Bottom rule of header
+        hLine(0, W, hdrH, RULE);
+
+        y = hdrH + 8;
+
+        // --- TWO COLUMN CONTENT ---
+        const LX = M, RX = M + CW + GAP;
+        let ly = y, ry = y;
+        const maxItemW = CW - 4;
+
+        // ===== LEFT COLUMN =====
+
+        // Doencas
+        ly = section(LX, ly, CW, 'Doencas / Condicoes', [255,255,255], BLUE);
+        if (!doencaItems.length) {
+          doc.setFontSize(12); doc.setFont('helvetica', 'normal'); doc.setTextColor(...LABEL);
+          doc.text('—', LX + 4, ly); ly += LINE_H;
+        } else {
+          doencaItems.forEach(d => { ly += bulletItem(LX, ly, d, maxItemW); });
+        }
+        ly += 7;
+
+        // Medicamentos
+        ly = section(LX, ly, CW, 'Medicamentos', [255,255,255], BLUE);
+        if (!meds.length) {
+          doc.setFontSize(12); doc.setFont('helvetica', 'normal'); doc.setTextColor(...LABEL);
+          doc.text('—', LX + 4, ly); ly += LINE_H;
+        } else {
+          meds.forEach(m => {
+            doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(...TEXT);
+            const label = m.nome + (m.dose ? '  —  ' + m.dose : '');
+            const lines = doc.splitTextToSize(label, maxItemW - 6);
+            doc.setFillColor(...LABEL); doc.circle(LX + 1.2, ly - 1, 0.6, 'F');
+            doc.text(lines, LX + 4, ly);
+            ly += lines.length * LINE_H + 1;
+          });
+        }
+        ly += 7;
+
+        // Historico
+        const histItems = [
+          ['Cirurgias', val('cirurgias')],
+          ['Internacoes', val('internacoes')],
+          ['Doencas ant.', val('doencas-anteriores')],
+        ].filter(h => h[1]);
+        ly = section(LX, ly, CW, 'Historico Medico', [255,255,255], BLUE);
+        if (!histItems.length) {
+          doc.setFontSize(12); doc.setFont('helvetica', 'normal'); doc.setTextColor(...LABEL);
+          doc.text('—', LX + 4, ly); ly += LINE_H;
+        } else {
+          histItems.forEach(h => {
+            doc.setFontSize(12);
+            const combined = h[0] + ':  ' + h[1];
+            const lines = doc.splitTextToSize(combined, maxItemW);
+            doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
+            doc.text(lines, LX, ly);
+            ly += lines.length * LINE_H + 1.5;
+          });
+        }
+        ly += 7;
+
+        // ===== RIGHT COLUMN =====
+
+        // Alergias — only section with color accent
+        if (hasAlergias) {
+          ry = section(RX, ry, CW, 'Alergias', [255,255,255], RED);
+          const alergiaEntries = [];
+          if (alergiaMed) alergiaEntries.push(['Medicamentos', alergiaMed]);
+          if (alergiaAli) alergiaEntries.push(['Alimentos', alergiaAli]);
+          if (alergiaOutras) alergiaEntries.push(['Outras', alergiaOutras]);
+          alergiaEntries.forEach(a => {
+            doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(...RED);
+            doc.text(a[0], RX, ry);
+            ry += 4;
+            doc.setFontSize(12); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
+            const lines = doc.splitTextToSize(a[1], CW);
+            doc.text(lines, RX, ry);
+            ry += lines.length * LINE_H + 2.5;
+          });
+          ry += 5;
+        }
+
+        // Exames
+        ry = section(RX, ry, CW, 'Exames Recentes', [255,255,255], BLUE);
+        if (!exams.length) {
+          doc.setFontSize(12); doc.setFont('helvetica', 'normal'); doc.setTextColor(...LABEL);
+          doc.text('—', RX + 4, ry); ry += LINE_H;
+        } else {
+          exams.forEach(e => {
+            const label = e.nome + (e.data ? '  (' + e.data + ')' : '');
+            ry += bulletItem(RX, ry, label, CW);
+          });
+        }
+        ry += 7;
+
+        // Vacinas
+        const vacinas = [
+          ['Gripe', val('vacina-gripe')],
+          ['COVID-19', val('vacina-covid')],
+          ['Tetano', val('vacina-tetano')],
+          ['Outras', val('vacina-outras')],
+        ].filter(v => v[1]);
+        ry = section(RX, ry, CW, 'Vacinas', [255,255,255], TEAL);
+        if (!vacinas.length) {
+          doc.setFontSize(12); doc.setFont('helvetica', 'normal'); doc.setTextColor(...LABEL);
+          doc.text('—', RX + 4, ry); ry += LINE_H;
+        } else {
+          vacinas.forEach(v => {
+            const combined = v[0] + ':  ' + v[1];
+            ry += bulletItem(RX, ry, combined, CW);
+          });
+        }
+        ry += 7;
+
+        // Medicos
+        ry = section(RX, ry, CW, 'Medicos', [255,255,255], BLUE);
+        if (!doctors.length) {
+          doc.setFontSize(12); doc.setFont('helvetica', 'normal'); doc.setTextColor(...LABEL);
+          doc.text('—', RX + 4, ry); ry += LINE_H;
+        } else {
+          doctors.forEach(d => {
+            const label = [d.esp, d.nome].filter(Boolean).join('  —  ');
+            ry += bulletItem(RX, ry, label, CW);
+          });
+        }
+        ry += 7;
+
+        // Observacoes — full width, below columns, only if fits
+        const obsText = val('observacoes');
+        const maxFooterY = H - 16;
+        if (obsText) {
+          const obsY = Math.max(ly, ry) + 2;
+          const fullW = W - 2 * M;
+          doc.setFontSize(12);
+          const obsLines = doc.splitTextToSize(obsText, fullW);
+          const boxH = 8 + obsLines.length * LINE_H;
+          if (obsY + boxH < maxFooterY) {
+            let oy = section(M, obsY, fullW, 'Observacoes', [255,255,255], GRAY_SEC);
+            doc.setFontSize(12); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
+            doc.text(obsLines, M, oy);
+          }
+        }
+
+        drawFooter(1, 2);
+
+        // ================================================================
+        // PAGE 2 — DETAILED
+        // ================================================================
+        doc.addPage();
+
+        // Slim header
+        doc.setFillColor(...BLUE);
+        doc.rect(0, 0, W, 14, 'F');
+        doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+        doc.text('Ficha de Saude  —  Detalhamento', M, 10);
+        if (headerName) {
+          doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(200, 220, 255);
+          doc.text(headerName, W - M, 10, { align: 'right' });
+        }
+
+        y = 20;
+
+        // Detail helpers
+        function dTitle(x, sy, w, title, color) {
+          color = color || BLUE;
+          doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(...color);
+          doc.text(title.toUpperCase(), x, sy);
+          hLine(x, x + w, sy + 1.5, color);
+          return sy + 6;
+        }
+        function dLbl(x, dly, label) {
+          doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(...LABEL);
+          doc.text(label, x, dly); return dly + 4;
+        }
+        function dVal(x, vy, value, maxW) {
+          doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
+          const lines = doc.splitTextToSize(value || '—', maxW);
+          doc.text(lines, x, vy); return vy + lines.length * LINE_H + 2;
+        }
+        function dTH(x, ty, cols, w) {
+          doc.setFillColor(...BG_LIGHT);
+          doc.rect(x, ty, w, 6.5, 'F');
+          hLine(x, x + w, ty); hLine(x, x + w, ty + 6.5);
+          doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(...LABEL);
+          let cx = x + 2;
+          cols.forEach(c => { doc.text(c.label, cx, ty + 4.3); cx += c.w; });
+          return ty + 6.5;
+        }
+        function dTR(x, ty, cols, row, w) {
+          doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
+          let ml = 1;
+          const cl = cols.map(c => { const l = doc.splitTextToSize(row[c.key] || '', c.w - 3); if (l.length > ml) ml = l.length; return l; });
+          const rh = ml * LINE_H + 2.5;
+          let cx = x + 2;
+          cl.forEach((l, i) => { doc.text(l, cx, ty + 4); cx += cols[i].w; });
+          hLine(x, x + w, ty + rh, RULE_LIGHT);
+          return ty + rh;
+        }
+
+        // LEFT col
+        const LX2 = M, RX2 = M + CW + GAP;
+        ly = y;
+
+        ly = dTitle(LX2, ly, CW, 'Doencas ou Condicoes', BLUE);
+        if (!doencaItems.length) { ly = dVal(LX2, ly, '—', CW); }
+        else { doencaItems.forEach(d => { doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT); const l = doc.splitTextToSize(d, CW - 8); doc.setFillColor(...LABEL); doc.circle(LX2 + 1.2, ly - 1, 0.5, 'F'); doc.text(l, LX2 + 4, ly); ly += l.length * LINE_H + 1; }); ly += 1; }
+        ly += 6;
+
+        ly = dTitle(LX2, ly, CW, 'Historico Medico', BLUE);
+        ly = dLbl(LX2, ly, 'Cirurgias'); ly = dVal(LX2 + 2, ly, val('cirurgias'), CW - 4);
+        ly = dLbl(LX2, ly, 'Internacoes'); ly = dVal(LX2 + 2, ly, val('internacoes'), CW - 4);
+        ly = dLbl(LX2, ly, 'Doencas anteriores'); ly = dVal(LX2 + 2, ly, val('doencas-anteriores'), CW - 4);
+        ly += 6;
+
+        ly = dTitle(LX2, ly, CW, 'Medicamentos', BLUE);
+        const mC = [{ label: 'Nome', key: 'nome', w: CW * 0.34 }, { label: 'Dose', key: 'dose', w: CW * 0.18 }, { label: 'Horario', key: 'hora', w: CW * 0.18 }, { label: 'Motivo', key: 'motivo', w: CW * 0.30 }];
+        ly = dTH(LX2, ly, mC, CW);
+        if (!meds.length) ly = dTR(LX2, ly, mC, { nome: '—' }, CW);
+        else meds.forEach(m => { ly = dTR(LX2, ly, mC, m, CW); });
+        ly += 6;
+
+        ly = dTitle(LX2, ly, CW, 'Medicos', BLUE);
+        const dCols = [{ label: 'Especialidade', key: 'esp', w: CW * 0.33 }, { label: 'Nome', key: 'nome', w: CW * 0.34 }, { label: 'Tel / Local', key: 'tel', w: CW * 0.33 }];
+        ly = dTH(LX2, ly, dCols, CW);
+        if (!doctors.length) ly = dTR(LX2, ly, dCols, { esp: '—' }, CW);
+        else doctors.forEach(d => { ly = dTR(LX2, ly, dCols, d, CW); });
+
+        // RIGHT col
+        ry = y;
+
+        ry = dTitle(RX2, ry, CW, 'Exames Recentes', BLUE);
+        const eCols = [{ label: 'Exame', key: 'nome', w: CW * 0.22 }, { label: 'Data', key: 'data', w: CW * 0.16 }, { label: 'Resultado / Obs.', key: 'res', w: CW * 0.62 }];
+        ry = dTH(RX2, ry, eCols, CW);
+        if (!exams.length) ry = dTR(RX2, ry, eCols, { nome: '—' }, CW);
+        else exams.forEach(e => { ry = dTR(RX2, ry, eCols, e, CW); });
+        ry += 6;
+
+        ry = dTitle(RX2, ry, CW, 'Vacinas', TEAL);
+        ry = dLbl(RX2, ry, 'Gripe'); ry = dVal(RX2 + 2, ry, val('vacina-gripe'), CW - 4);
+        ry = dLbl(RX2, ry, 'COVID-19'); ry = dVal(RX2 + 2, ry, val('vacina-covid'), CW - 4);
+        ry = dLbl(RX2, ry, 'Tetano'); ry = dVal(RX2 + 2, ry, val('vacina-tetano'), CW - 4);
+        ry = dLbl(RX2, ry, 'Outras'); ry = dVal(RX2 + 2, ry, val('vacina-outras'), CW - 4);
+        ry += 6;
+
+        ry = dTitle(RX2, ry, CW, 'Alergias', RED);
+        const aW = (CW - 4) / 3; ry += 0.5;
+        ['Medicamentos', 'Alimentos', 'Outras'].forEach((l, i) => dLbl(RX2 + i * aW, ry, l));
+        let ar = ry + 3.5, mAB = ar;
+        [alergiaMed, alergiaAli, alergiaOutras].forEach((v, i) => {
+          doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
+          const l = doc.splitTextToSize(v || '—', aW - 2); doc.text(l, RX2 + i * aW, ar);
+          const b = ar + l.length * LINE_H; if (b > mAB) mAB = b;
+        });
+        ry = mAB + 6;
+
+        const bY2 = Math.max(ly, ry) + 6;
+        const detW = W - 2 * M;
+        let oy = dTitle(M, bY2, detW, 'Observacoes', GRAY_SEC);
+        oy = dVal(M + 2, oy, val('observacoes'), detW - 4);
+
+        drawFooter(2, 2);
+
+        // Save
+        const fileName = (val('nome') || val('header-nome') || 'ficha-saude').replace(/\s+/g, '_');
+        doc.save(`Ficha_de_Saude_-_${fileName}.pdf`);
+      }
+    </script>
+
+    <!-- Firebase integration -->
+    <script type="module">
+      import { initFirebase } from '/health-docs/scripts/ficha-firebase.js';
+      initFirebase();
+    </script>
+  </body>
+</html>
