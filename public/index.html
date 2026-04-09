@@ -508,7 +508,7 @@
         .exp-menu::before,.exp-menu::after{display:none}
         .exp-item{
           font-size:clamp(1.3rem,5vw,1.8rem);
-          margin-left:0;
+          margin-left:calc(var(--i) * max(1vw, 10px));
           transform:none !important;
           animation:none !important;
           opacity:1;
@@ -570,7 +570,7 @@
         .main-screen{padding:3.5rem 1rem 1.5rem}
         .profile .pf-name{font-size:clamp(1.5rem,6vw,2rem)}
         .profile .pf-role{font-size:1.1rem;letter-spacing:.15em}
-        .exp-item{font-size:clamp(1.1rem,4.5vw,1.5rem)}
+        .exp-item{font-size:clamp(1.1rem,4.5vw,1.5rem);margin-left:calc(var(--i) * 8px)}
         .detail{padding:3.5rem 1rem 1.5rem}
         .dj-company{font-size:clamp(1.1rem,4.5vw,1.6rem)}
         .dj-desc{font-size:.8rem}
