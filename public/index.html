@@ -22,7 +22,8 @@
     <style>
       :root { --red:#FF0000; --dark-red:#CC0000; --black:#0A0A0A; --white:#FFF; --skew:-12deg; }
       *{margin:0;padding:0;box-sizing:border-box}
-      body{font-family:'Inter',sans-serif;background:var(--black);color:var(--white);overflow:hidden;height:100vh;width:100vw;user-select:none}
+      html{overflow:hidden;height:100%;position:fixed;width:100%}
+      body{font-family:'Inter',sans-serif;background:var(--black);color:var(--white);overflow:hidden;height:100vh;width:100vw;user-select:none;position:fixed;inset:0}
       ::selection{background:var(--red);color:var(--white)}
 
       /* ===== SPLASH ===== */
@@ -481,25 +482,101 @@
       .footer a:hover{color:var(--red)}
       .footer-hint{font-family:'Bebas Neue',sans-serif;letter-spacing:.2em;font-size:.75rem;transform:skewX(-6deg)}
 
+      /* ===== TABLET ===== */
+      @media(max-width:1024px){
+        .main-screen{padding:4rem 1.5rem 2rem}
+        .profile{padding-right:max(1rem,3vw)}
+        .profile .pf-desc{max-width:280px}
+        .detail{padding:4rem 2rem 2rem}
+        .detail-silhouette{width:clamp(150px,22vw,300px);height:clamp(150px,22vw,300px)}
+        .dj-company{font-size:clamp(1.5rem,3vw,2.4rem)}
+        .footer{flex-wrap:wrap;gap:.25rem;justify-content:center}
+      }
+
       /* ===== MOBILE ===== */
       @media(max-width:768px){
-        .main-screen{grid-template-columns:1fr;grid-template-rows:auto 1fr;padding:4rem 1.5rem 2rem;overflow-y:auto;align-items:start}
-        .profile{padding-left:0;padding-right:0;margin-bottom:1.5rem;order:1}
-        .exp-menu{order:2;padding-left:0}
+        .header{display:none}
+        .main-screen{grid-template-columns:1fr;grid-template-rows:auto 1fr;padding:2rem 1.5rem 2rem;overflow:hidden;align-items:center}
+        .profile{padding-left:0;padding-right:0;margin-bottom:1rem;order:1}
+        .profile .pf-name{font-size:clamp(1.8rem,7vw,2.8rem);transform:none}
+        .profile .pf-role{transform:none}
         .profile .pf-desc{display:none}
-        .profile .pf-name{font-size:clamp(1.8rem,7vw,2.8rem)}
+        .profile .pf-social a{transform:none}
         .profile-logo{display:none}
-        .exp-item{font-size:clamp(1.3rem,5vw,1.8rem);margin-left:calc(var(--i) * max(1vw,10px))}
-        .detail{padding:4rem 1.5rem 2rem}
-        .detail-back{top:.75rem;left:1rem}
-        .detail-silhouette{width:150px;height:150px;right:2%;bottom:2%}
-        .header::before{width:180px}
-        .logo{font-size:1.2rem}
+
+        .exp-menu{order:2;padding-left:0}
+        .exp-menu::before,.exp-menu::after{display:none}
+        .exp-item{
+          font-size:clamp(1.3rem,5vw,1.8rem);
+          margin-left:0;
+          transform:none !important;
+          animation:none !important;
+          opacity:1;
+          color:var(--white);
+          text-transform:uppercase;
+        }
+        .exp-item:hover,.exp-item.active{transform:translateX(8px) !important;color:var(--red)}
+        .p5-morph{display:none}
+
+        /* Disable P5 letter transformations */
+        .p5-has-bg,.p5-no-bg{
+          transform:none !important;
+          font-size:inherit !important;
+          clip-path:none !important;
+          -webkit-text-stroke:0 !important;
+          text-stroke:0 !important;
+          text-shadow:none !important;
+          background:none !important;
+          color:inherit !important;
+          padding:0 !important;
+          margin:0 !important;
+          text-transform:uppercase;
+        }
+
+        /* Detail panel */
+        .detail{padding:2rem 1.5rem 2rem;overflow:hidden}
+        .detail-back{top:.75rem;left:1rem;font-size:1rem;padding:.4rem 1rem;transform:none}
+        .detail-back:hover{transform:scale(1.05)}
+        .detail-silhouette{display:none}
+        .floating-logo.detail-pos{display:none !important}
+        .detail-card{max-width:100%}
+        .dj-header{gap:.75rem;flex-wrap:wrap}
+        .dj-logo{width:50px;height:50px}
+        .dj-company{font-size:clamp(1.3rem,5vw,2rem);transform:none}
+        .dj-role{font-size:.85rem;transform:none}
+        .dj-date{font-size:.8rem;padding:.2rem .8rem;transform:none}
+        .dj-desc{font-size:.85rem;line-height:1.7}
+
+        .footer-hint{transform:none}
+
+        /* Splash */
         .splash-name{font-size:clamp(3.5rem,14vw,7rem)}
+
+        /* Decorations */
         .deco-star,.deco-halftone,.deco-bubble{display:none}
         .bg-split-edge{left:35%}
         .bg-red-half{width:50%}
         .bg-orb{filter:blur(20px)}
+        .bg-slash{display:none}
+
+        /* Footer */
+        .footer{flex-wrap:wrap;gap:.25rem;padding:.5rem 1rem;justify-content:center}
+        .footer a{margin-left:.75rem;font-size:.65rem}
+        .footer-hint{font-size:.65rem}
+      }
+
+      /* ===== SMALL MOBILE ===== */
+      @media(max-width:420px){
+        .main-screen{padding:3.5rem 1rem 1.5rem}
+        .profile .pf-name{font-size:clamp(1.5rem,6vw,2rem)}
+        .profile .pf-role{font-size:1.1rem;letter-spacing:.15em}
+        .exp-item{font-size:clamp(1.1rem,4.5vw,1.5rem)}
+        .detail{padding:3.5rem 1rem 1.5rem}
+        .dj-company{font-size:clamp(1.1rem,4.5vw,1.6rem)}
+        .dj-desc{font-size:.8rem}
+        .splash-name{font-size:clamp(2.8rem,12vw,5rem)}
+        .splash-role{font-size:clamp(.8rem,2.5vw,1.5rem);letter-spacing:.3em}
+        .bg-orb-1,.bg-orb-4,.bg-orb-5{display:none}
       }
     </style>
   </head>
