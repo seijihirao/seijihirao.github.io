@@ -1,6 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
 import { getAuth, signInWithPopup, signOut as firebaseSignOut, GoogleAuthProvider, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
-import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, where, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, updateDoc, query, where, orderBy, serverTimestamp, arrayUnion, arrayRemove } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
 import { firebaseConfig } from '/boardgames/scripts/firebase-config.js';
 
 const app = initializeApp(firebaseConfig);
@@ -11,7 +11,9 @@ const provider = new GoogleAuthProvider();
 let currentUser = null;
 let currentFichaId = null;
 let fichas = [];
+let sharedFichas = [];
 let saveTimeout = null;
+let isReadOnly = false;
 
 const COLLECTION = 'health-docs';
 
@@ -56,6 +58,9 @@ export async function signOut() {
         currentUser = null;
         currentFichaId = null;
         fichas = [];
+        sharedFichas = [];
+        isReadOnly = false;
+        setFormReadOnly(false);
         updateAuthUI();
         updateFichaSelector();
     } catch (error) {
@@ -175,6 +180,18 @@ async function loadFichas() {
         snapshot.forEach(d => {
             fichas.push({ id: d.id, ...d.data() });
         });
+
+        // Load fichas shared with this user
+        const sharedQ = query(
+            collection(db, COLLECTION),
+            where('sharedWith', 'array-contains', currentUser.email)
+        );
+        const sharedSnapshot = await getDocs(sharedQ);
+        sharedFichas = [];
+        sharedSnapshot.forEach(d => {
+            sharedFichas.push({ id: d.id, ...d.data(), _shared: true });
+        });
+
         updateFichaSelector();
 
         // Auto-select first ficha if available
@@ -189,16 +206,20 @@ async function loadFichas() {
 
 async function selectFicha(fichaId) {
     currentFichaId = fichaId;
-    const ficha = fichas.find(f => f.id === fichaId);
+    let ficha = fichas.find(f => f.id === fichaId);
+    const shared = sharedFichas.find(f => f.id === fichaId);
+    if (!ficha) ficha = shared;
+    isReadOnly = !!shared;
     if (ficha && ficha.formData) {
-        window.clearForm(true); // clear without removing session storage prompt
+        window.clearForm(true);
         populateForm(ficha.formData);
     }
+    setFormReadOnly(isReadOnly);
     updateFichaSelector();
 }
 
 export async function saveFicha() {
-    if (!currentUser) return;
+    if (!currentUser || isReadOnly) return;
 
     const formData = collectFormData();
     const label = formData['nome'] || 'Sem nome';
@@ -238,7 +259,7 @@ export async function saveFicha() {
 }
 
 function debouncedAutoSave() {
-    if (!currentUser || !currentFichaId) return;
+    if (!currentUser || !currentFichaId || isReadOnly) return;
     setSaveStatus('unsaved');
     clearTimeout(saveTimeout);
     saveTimeout = setTimeout(async () => {
@@ -268,6 +289,8 @@ function debouncedAutoSave() {
 
 export async function newFicha() {
     currentFichaId = null;
+    isReadOnly = false;
+    setFormReadOnly(false);
     window.clearForm(true);
     updateFichaSelector();
 }
@@ -301,7 +324,7 @@ function updateFichaSelector() {
 
     selector.innerHTML = '';
 
-    if (fichas.length === 0) {
+    if (fichas.length === 0 && sharedFichas.length === 0) {
         const opt = document.createElement('option');
         opt.value = '';
         opt.textContent = 'Nova ficha';
@@ -316,6 +339,53 @@ function updateFichaSelector() {
         if (f.id === currentFichaId) opt.selected = true;
         selector.appendChild(opt);
     });
+
+    if (sharedFichas.length > 0) {
+        const group = document.createElement('optgroup');
+        group.label = 'Compartilhadas comigo';
+        sharedFichas.forEach(f => {
+            const opt = document.createElement('option');
+            opt.value = f.id;
+            opt.textContent = (f.label || 'Sem nome') + ' (compartilhada)';
+            if (f.id === currentFichaId) opt.selected = true;
+            group.appendChild(opt);
+        });
+        selector.appendChild(group);
+    }
+
+    // Update share/delete button visibility based on read-only
+    const shareBtn = document.getElementById('share-btn');
+    const deleteBtn = document.querySelector('[onclick="deleteFicha()"]');
+    const saveBtn = document.getElementById('save-btn');
+    if (shareBtn) shareBtn.classList.toggle('hidden', isReadOnly || !currentFichaId);
+    if (deleteBtn) deleteBtn.classList.toggle('hidden', isReadOnly);
+    if (saveBtn) saveBtn.classList.toggle('hidden', isReadOnly);
+}
+
+function setFormReadOnly(readOnly) {
+    const form = document.getElementById('ficha-form');
+    if (!form) return;
+    form.querySelectorAll('input, textarea, select').forEach(el => {
+        el.disabled = readOnly;
+    });
+    // Hide add-row buttons
+    form.querySelectorAll('.no-print.btn').forEach(btn => {
+        btn.classList.toggle('hidden', readOnly);
+    });
+    // Show read-only banner
+    let banner = document.getElementById('readonly-banner');
+    if (readOnly) {
+        if (!banner) {
+            banner = document.createElement('div');
+            banner.id = 'readonly-banner';
+            banner.className = 'bg-amber-100 border border-amber-300 text-amber-800 px-4 py-2 text-sm text-center font-medium';
+            banner.textContent = 'Ficha compartilhada — somente leitura';
+            form.parentNode.insertBefore(banner, form);
+        }
+        banner.classList.remove('hidden');
+    } else if (banner) {
+        banner.classList.add('hidden');
+    }
 }
 
 let saveStatusTimeout = null;
@@ -379,6 +449,84 @@ function showToast(message, type) {
     setTimeout(() => toast.classList.add('hidden'), 3000);
 }
 
+// ===== Sharing =====
+
+export async function shareFicha(email) {
+    if (!currentUser || !currentFichaId || isReadOnly) return;
+    email = (email || '').trim().toLowerCase();
+    if (!email) return;
+    if (email === currentUser.email.toLowerCase()) {
+        showToast('Voce nao pode compartilhar consigo mesmo', 'error');
+        return;
+    }
+    try {
+        await updateDoc(doc(db, COLLECTION, currentFichaId), {
+            sharedWith: arrayUnion(email),
+        });
+        showToast(`Compartilhado com ${email}`, 'success');
+        // Update local state
+        const ficha = fichas.find(f => f.id === currentFichaId);
+        if (ficha) {
+            ficha.sharedWith = ficha.sharedWith || [];
+            if (!ficha.sharedWith.includes(email)) ficha.sharedWith.push(email);
+        }
+        updateShareModal();
+    } catch (error) {
+        console.error('Error sharing ficha:', error);
+        showToast('Erro ao compartilhar', 'error');
+    }
+}
+
+export async function unshareFicha(email) {
+    if (!currentUser || !currentFichaId || isReadOnly) return;
+    try {
+        await updateDoc(doc(db, COLLECTION, currentFichaId), {
+            sharedWith: arrayRemove(email),
+        });
+        const ficha = fichas.find(f => f.id === currentFichaId);
+        if (ficha && ficha.sharedWith) {
+            ficha.sharedWith = ficha.sharedWith.filter(e => e !== email);
+        }
+        showToast(`Compartilhamento removido: ${email}`, 'success');
+        updateShareModal();
+    } catch (error) {
+        console.error('Error unsharing ficha:', error);
+        showToast('Erro ao remover compartilhamento', 'error');
+    }
+}
+
+export function openShareModal() {
+    const modal = document.getElementById('share-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        updateShareModal();
+    }
+}
+
+export function closeShareModal() {
+    const modal = document.getElementById('share-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function updateShareModal() {
+    const list = document.getElementById('share-list');
+    if (!list) return;
+    const ficha = fichas.find(f => f.id === currentFichaId);
+    const shared = ficha?.sharedWith || [];
+    if (shared.length === 0) {
+        list.innerHTML = '<p class="text-sm text-gray-400 italic">Nenhum compartilhamento</p>';
+        return;
+    }
+    list.innerHTML = shared.map(email => `
+        <div class="flex items-center justify-between gap-2 py-1">
+            <span class="text-sm text-gray-700">${email}</span>
+            <button onclick="unshareFicha('${email}')" class="btn btn-xs btn-ghost text-red-500 hover:bg-red-50" title="Remover">
+                <i class="ri-close-line"></i>
+            </button>
+        </div>
+    `).join('');
+}
+
 // ===== Init =====
 
 export function initFirebase() {
@@ -415,3 +563,7 @@ window.firebaseSignOut = signOut;
 window.saveFicha = saveFicha;
 window.newFicha = newFicha;
 window.deleteFicha = deleteFicha;
+window.shareFicha = shareFicha;
+window.unshareFicha = unshareFicha;
+window.openShareModal = openShareModal;
+window.closeShareModal = closeShareModal;
