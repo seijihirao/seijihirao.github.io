@@ -193,6 +193,18 @@
               </div>
             </div>
 
+            <!-- 6. Historico Familiar -->
+            <div class="border border-gray-200 rounded-lg p-3 bg-white">
+              <div class="text-sm font-bold bg-blue-600 text-white px-3 py-1 rounded-md mb-2 shadow-sm">Histórico Familiar</div>
+              <div id="fam-container">
+                <div class="hidden sm:grid grid-cols-12 gap-1 mb-1 px-1">
+                  <div class="col-span-3 text-xs font-semibold text-gray-500">Parentesco</div>
+                  <div class="col-span-9 text-xs font-semibold text-gray-500">Condições / Observações</div>
+                </div>
+              </div>
+              <button onclick="addFamRow()" class="no-print btn btn-xs btn-outline btn-primary mt-1">+ Familiar</button>
+            </div>
+
             <!-- 7. Medicamentos -->
             <div class="border border-gray-200 rounded-lg p-3 bg-white">
               <div class="text-sm font-bold bg-blue-600 text-white px-3 py-1 rounded-md mb-2 shadow-sm">Medicamentos de Uso Contínuo</div>
@@ -308,7 +320,7 @@
 
     <script>
       // ===== Dynamic table rows =====
-      let medCount = 0, docCount = 0, examCount = 0, doencaCount = 0;
+      let medCount = 0, docCount = 0, examCount = 0, doencaCount = 0, famCount = 0;
 
       function addDoencaRow() {
         doencaCount++;
@@ -318,6 +330,17 @@
           <input class="input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white doenca-nome" type="text" placeholder="Doença ou condição...">
         `;
         document.getElementById('doencas-container').appendChild(row);
+      }
+
+      function addFamRow() {
+        famCount++;
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-12 gap-1 mb-1 fam-row';
+        row.innerHTML = `
+          <input class="col-span-3 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white fam-parentesco" type="text" placeholder="Ex: Mãe (falecida)">
+          <input class="col-span-9 input input-bordered input-xs w-full text-xs h-7 bg-gray-50 focus:bg-white fam-condicoes" type="text" placeholder="Ex: CA MAMA | DM2 | HAS">
+        `;
+        document.getElementById('fam-container').appendChild(row);
       }
 
       function addMedRow() {
@@ -359,12 +382,14 @@
 
       // Expose to window for module access
       window.addDoencaRow = addDoencaRow;
+      window.addFamRow = addFamRow;
       window.addMedRow = addMedRow;
       window.addDocRow = addDocRow;
       window.addExamRow = addExamRow;
 
       // Add default rows
       for (let i = 0; i < 4; i++) addDoencaRow();
+      for (let i = 0; i < 4; i++) addFamRow();
       for (let i = 0; i < 5; i++) addMedRow();
       for (let i = 0; i < 4; i++) addDocRow();
       for (let i = 0; i < 4; i++) addExamRow();
@@ -381,6 +406,10 @@
         // Table rows
         data._doencas = [...document.querySelectorAll('.doenca-row')].map(r => ({
           nome: r.querySelector('.doenca-nome')?.value || '',
+        }));
+        data._fam = [...document.querySelectorAll('.fam-row')].map(r => ({
+          parentesco: r.querySelector('.fam-parentesco')?.value || '',
+          condicoes: r.querySelector('.fam-condicoes')?.value || '',
         }));
         data._meds = [...document.querySelectorAll('.med-row')].map(r => ({
           nome: r.querySelector('.med-nome')?.value || '',
@@ -415,6 +444,14 @@
           document.querySelectorAll('.doenca-row').forEach((r, i) => {
             if (!data._doencas[i]) return;
             r.querySelector('.doenca-nome').value = data._doencas[i].nome;
+          });
+        }
+        if (data._fam) {
+          while (document.querySelectorAll('.fam-row').length < data._fam.length) addFamRow();
+          document.querySelectorAll('.fam-row').forEach((r, i) => {
+            if (!data._fam[i]) return;
+            r.querySelector('.fam-parentesco').value = data._fam[i].parentesco;
+            r.querySelector('.fam-condicoes').value = data._fam[i].condicoes;
           });
         }
         if (data._meds) {
@@ -526,6 +563,10 @@
           data: r.querySelector('.exam-data')?.value || '',
           res: r.querySelector('.exam-res')?.value || '',
         })).filter(e => e.nome || e.data || e.res);
+        const famItems = [...document.querySelectorAll('.fam-row')].map(r => ({
+          parentesco: r.querySelector('.fam-parentesco')?.value || '',
+          condicoes: r.querySelector('.fam-condicoes')?.value || '',
+        })).filter(f => f.parentesco || f.condicoes);
         const emergNome = val('emerg-nome');
         const emergParent = val('emerg-parentesco');
         const emergTel = val('emerg-telefone');
@@ -688,6 +729,19 @@
             doc.setFont('helvetica', 'normal'); doc.setTextColor(...TEXT);
             doc.text(lines, LX, ly);
             ly += lines.length * LINE_H + 2;
+          });
+        }
+        ly += 9;
+
+        // Historico Familiar
+        ly = section(LX, ly, CW, 'Historico Familiar', [255,255,255], BLUE);
+        if (!famItems.length) {
+          doc.setFontSize(12); doc.setFont('helvetica', 'normal'); doc.setTextColor(...LABEL);
+          doc.text('—', LX + 4, ly); ly += LINE_H;
+        } else {
+          famItems.forEach(f => {
+            const combined = f.parentesco + (f.condicoes ? ':  ' + f.condicoes : '');
+            ly += bulletItem(LX, ly, combined, maxItemW);
           });
         }
         ly += 9;
@@ -860,6 +914,13 @@
 
         // RIGHT col
         ry = y;
+
+        ry = dTitle(RX2, ry, CW, 'Historico Familiar', BLUE);
+        const fCols = [{ label: 'Parentesco', key: 'parentesco', w: CW * 0.30 }, { label: 'Condições / Obs.', key: 'condicoes', w: CW * 0.70 }];
+        ry = dTH(RX2, ry, fCols, CW);
+        if (!famItems.length) ry = dTR(RX2, ry, fCols, { parentesco: '—' }, CW);
+        else famItems.forEach(f => { ry = dTR(RX2, ry, fCols, f, CW); });
+        ry += 6;
 
         ry = dTitle(RX2, ry, CW, 'Exames Recentes', BLUE);
         const eCols = [{ label: 'Exame', key: 'nome', w: CW * 0.22 }, { label: 'Data', key: 'data', w: CW * 0.16 }, { label: 'Resultado / Obs.', key: 'res', w: CW * 0.62 }];

@@ -78,6 +78,10 @@ function collectFormData() {
     data._doencas = [...document.querySelectorAll('.doenca-row')].map(r => ({
         nome: r.querySelector('.doenca-nome')?.value || '',
     }));
+    data._fam = [...document.querySelectorAll('.fam-row')].map(r => ({
+        parentesco: r.querySelector('.fam-parentesco')?.value || '',
+        condicoes: r.querySelector('.fam-condicoes')?.value || '',
+    }));
     data._meds = [...document.querySelectorAll('.med-row')].map(r => ({
         nome: r.querySelector('.med-nome')?.value || '',
         dose: r.querySelector('.med-dose')?.value || '',
@@ -117,6 +121,20 @@ function populateForm(data) {
         // Ensure at least some empty rows
         if (data._doencas.length < 4) {
             for (let i = data._doencas.length; i < 4; i++) window.addDoencaRow();
+        }
+    }
+    if (data._fam) {
+        const container = document.getElementById('fam-container');
+        container.querySelectorAll('.fam-row').forEach(r => r.remove());
+        data._fam.forEach(f => {
+            window.addFamRow();
+            const rows = container.querySelectorAll('.fam-row');
+            const last = rows[rows.length - 1];
+            last.querySelector('.fam-parentesco').value = f.parentesco;
+            last.querySelector('.fam-condicoes').value = f.condicoes;
+        });
+        if (data._fam.length < 4) {
+            for (let i = data._fam.length; i < 4; i++) window.addFamRow();
         }
     }
     if (data._meds) {
@@ -209,7 +227,7 @@ async function selectFicha(fichaId) {
     let ficha = fichas.find(f => f.id === fichaId);
     const shared = sharedFichas.find(f => f.id === fichaId);
     if (!ficha) ficha = shared;
-    isReadOnly = !!shared;
+    isReadOnly = false;
     if (ficha && ficha.formData) {
         window.clearForm(true);
         populateForm(ficha.formData);
@@ -227,16 +245,15 @@ export async function saveFicha() {
 
     try {
         if (currentFichaId) {
-            await setDoc(doc(db, COLLECTION, currentFichaId), {
-                userId: currentUser.uid,
-                label,
-                formData,
-                updatedAt: serverTimestamp(),
-            }, { merge: true });
-            const idx = fichas.findIndex(f => f.id === currentFichaId);
+            const isShared = sharedFichas.some(f => f.id === currentFichaId);
+            const updateData = { label, formData, updatedAt: serverTimestamp() };
+            if (!isShared) updateData.userId = currentUser.uid;
+            await setDoc(doc(db, COLLECTION, currentFichaId), updateData, { merge: true });
+            const allFichas = isShared ? sharedFichas : fichas;
+            const idx = allFichas.findIndex(f => f.id === currentFichaId);
             if (idx >= 0) {
-                fichas[idx].label = label;
-                fichas[idx].formData = formData;
+                allFichas[idx].label = label;
+                allFichas[idx].formData = formData;
             }
         } else {
             const docRef = doc(collection(db, COLLECTION));
@@ -267,16 +284,15 @@ function debouncedAutoSave() {
         const formData = collectFormData();
         const label = formData['nome'] || 'Sem nome';
         try {
-            await setDoc(doc(db, COLLECTION, currentFichaId), {
-                userId: currentUser.uid,
-                label,
-                formData,
-                updatedAt: serverTimestamp(),
-            }, { merge: true });
-            const idx = fichas.findIndex(f => f.id === currentFichaId);
+            const isShared = sharedFichas.some(f => f.id === currentFichaId);
+            const updateData = { label, formData, updatedAt: serverTimestamp() };
+            if (!isShared) updateData.userId = currentUser.uid;
+            await setDoc(doc(db, COLLECTION, currentFichaId), updateData, { merge: true });
+            const allFichas = isShared ? sharedFichas : fichas;
+            const idx = allFichas.findIndex(f => f.id === currentFichaId);
             if (idx >= 0) {
-                fichas[idx].label = label;
-                fichas[idx].formData = formData;
+                allFichas[idx].label = label;
+                allFichas[idx].formData = formData;
             }
             updateFichaSelector();
             setSaveStatus('saved');
@@ -357,9 +373,10 @@ function updateFichaSelector() {
     const shareBtn = document.getElementById('share-btn');
     const deleteBtn = document.querySelector('[onclick="deleteFicha()"]');
     const saveBtn = document.getElementById('save-btn');
-    if (shareBtn) shareBtn.classList.toggle('hidden', isReadOnly || !currentFichaId);
-    if (deleteBtn) deleteBtn.classList.toggle('hidden', isReadOnly);
-    if (saveBtn) saveBtn.classList.toggle('hidden', isReadOnly);
+    const isShared = sharedFichas.some(f => f.id === currentFichaId);
+    if (shareBtn) shareBtn.classList.toggle('hidden', isShared || !currentFichaId);
+    if (deleteBtn) deleteBtn.classList.toggle('hidden', isShared);
+    if (saveBtn) saveBtn.classList.toggle('hidden', false);
 }
 
 function setFormReadOnly(readOnly) {
