@@ -1,10 +1,19 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 
+const ALLOWED_EMAILS = (process.env.ALLOWED_EMAILS || "")
+  .split(",")
+  .map((e) => e.trim())
+  .filter(Boolean);
+
 exports.fetchLudopedia = onCall(
   { cors: ["https://seiji.life", "https://www.seiji.life", /localhost(:\d+)?$/] },
   async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "Login necessário");
+  }
+
+  if (!ALLOWED_EMAILS.includes(request.auth.token.email)) {
+    throw new HttpsError("permission-denied", "Sem acesso");
   }
 
   const url = request.data.url;
