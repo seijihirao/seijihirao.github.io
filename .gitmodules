@@ -3,5 +3,5 @@
 	url = git@github.com:seijihirao/boardgames.git
 [submodule "public/legacy/www3"]
 	path = public/legacy/www3
-	url = git@github.com-seijihirao:seijihirao/seijihirao.github.io.git
+	url = git@github.com:seijihirao/seijihirao.github.io.git
 	branch = www3-pages
