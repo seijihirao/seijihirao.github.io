@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catalogs · Seiji's Collection</title>
+  <meta name="description" content="A hand-picked library of the internet's most obsessive databases — phones, cars, shoes, calibers, gadgets and more.">
+  <link rel="icon" type="image/png" href="/assets/icons/logo.png">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Caveat:wght@600;700&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --paper: #f4ecd8;
+      --paper-shadow: #d9cfb7;
+      --ink: #1d1b18;
+      --accent: #ff3b30;
+      --accent-2: #2f6cf6;
+      --accent-3: #f5c518;
+      --accent-4: #2ecc71;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; }
+    body {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at top left, rgba(255,59,48,.08), transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(47,108,246,.08), transparent 55%),
+        repeating-linear-gradient(45deg, rgba(0,0,0,.015) 0 1px, transparent 1px 14px),
+        var(--paper);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(0,0,0,.04) 1px, transparent 1.5px),
+        radial-gradient(circle at 80% 60%, rgba(0,0,0,.03) 1px, transparent 1.5px),
+        radial-gradient(circle at 50% 90%, rgba(0,0,0,.04) 1px, transparent 1.5px);
+      background-size: 60px 60px, 80px 80px, 100px 100px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .5;
+    }
+
+    a { color: inherit; }
+
+    /* ===== HEADER / MASTHEAD ===== */
+    .masthead {
+      position: relative;
+      padding: 3rem 1.5rem 1rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      z-index: 2;
+    }
+    .masthead-row {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: .35rem;
+      font-family: 'DM Mono', monospace; font-size: .8rem;
+      text-decoration: none;
+      padding: .25rem .6rem;
+      background: var(--ink); color: var(--paper);
+      transform: rotate(-2deg);
+      transition: transform .15s;
+    }
+    .back-link:hover { transform: rotate(-2deg) translateX(-3px); }
+
+    .title-block { margin-top: .75rem; }
+    .title {
+      font-family: 'Bungee', sans-serif;
+      font-size: clamp(3rem, 9vw, 7rem);
+      line-height: .85;
+      letter-spacing: -.02em;
+      color: var(--ink);
+      text-transform: uppercase;
+      position: relative;
+      display: inline-block;
+    }
+    .title span:nth-child(1) { color: var(--ink); }
+    .title span:nth-child(2) {
+      color: var(--accent);
+      display: inline-block;
+      transform: translateY(.1em) rotate(-3deg);
+      text-shadow: 4px 4px 0 var(--ink);
+    }
+    .title-stamp {
+      position: absolute;
+      top: -.4em; right: -1.2em;
+      font-family: 'Caveat', cursive;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      color: var(--accent-2);
+      transform: rotate(8deg);
+      border: 2px solid var(--accent-2);
+      padding: .1em .4em;
+      background: rgba(255,255,255,.4);
+    }
+
+    .tagline {
+      font-family: 'DM Mono', monospace;
+      margin-top: 1rem;
+      font-size: .95rem;
+      max-width: 580px;
+      color: #555;
+    }
+    .tagline strong { color: var(--ink); background: var(--accent-3); padding: 0 .25em; }
+
+    .auth-corner {
+      display: flex; gap: .5rem; align-items: center;
+      font-family: 'DM Mono', monospace; font-size: .8rem;
+    }
+    .btn {
+      font-family: 'DM Mono', monospace; font-weight: 500;
+      font-size: .8rem; text-transform: uppercase; letter-spacing: .05em;
+      padding: .55rem .9rem;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      color: var(--ink);
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--ink);
+      transition: transform .1s, box-shadow .1s;
+      display: inline-flex; align-items: center; gap: .35rem;
+    }
+    .btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+    .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+    .btn.btn-primary { background: var(--accent); color: var(--paper); }
+    .btn.btn-secondary { background: var(--accent-2); color: var(--paper); }
+    .btn.btn-ghost { box-shadow: none; border-color: rgba(0,0,0,.2); }
+    .btn.btn-ghost:hover { box-shadow: 2px 2px 0 var(--ink); border-color: var(--ink); }
+    .btn-icon { padding: .55rem .65rem; }
+
+    /* ===== CATEGORY FILTER ===== */
+    .filter-bar {
+      max-width: 1400px;
+      margin: 1.25rem auto 0;
+      padding: 0 1.5rem;
+      position: relative; z-index: 2;
+      display: flex; flex-wrap: wrap; gap: .4rem;
+    }
+    .filter-pill {
+      font-family: 'DM Mono', monospace; font-size: .75rem;
+      padding: .3rem .7rem;
+      border: 1.5px dashed rgba(0,0,0,.4);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      transition: all .15s;
+    }
+    .filter-pill:hover { background: rgba(0,0,0,.05); }
+    .filter-pill.active {
+      background: var(--ink);
+      color: var(--paper);
+      border-style: solid;
+    }
+    .filter-bar-lang {
+      margin-top: .4rem;
+      padding-bottom: .25rem;
+    }
+    .filter-bar-lang .filter-pill {
+      border-style: solid;
+      border-color: rgba(0,0,0,.2);
+    }
+    .filter-bar-lang .filter-pill.active {
+      background: var(--accent-2);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+    .filter-bar-lang .filter-pill .flag {
+      font-size: .95rem;
+      margin-right: .2rem;
+      vertical-align: -2px;
+    }
+
+    .sort-bar {
+      max-width: 1400px;
+      margin: .8rem auto 0;
+      padding: 0 1.5rem;
+      position: relative; z-index: 2;
+      display: flex; flex-wrap: wrap; gap: .4rem; align-items: center;
+    }
+    .sort-label {
+      font-family: 'DM Mono', monospace;
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: #888;
+      margin-right: .25rem;
+    }
+    .sort-pill {
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      padding: .25rem .65rem;
+      border: 1.5px solid rgba(0,0,0,.2);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      display: inline-flex; align-items: center; gap: .3rem;
+    }
+    .sort-pill:hover { background: rgba(0,0,0,.04); }
+    .sort-pill.active {
+      background: var(--accent-3);
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
+    /* ===== GRID ===== */
+    .grid {
+      max-width: 1400px;
+      margin: 2rem auto 6rem;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      position: relative; z-index: 1;
+    }
+
+    /* ===== CARD: PASSPORT STAMP / TRADING CARD ===== */
+    .card {
+      --c: var(--accent);
+      position: relative;
+      background: #fff;
+      border: 3px solid var(--ink);
+      padding: 1rem 1rem 1.1rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: flex; flex-direction: column;
+      transform: rotate(var(--rot, 0deg));
+      transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+      box-shadow: 6px 6px 0 var(--ink);
+      min-height: 220px;
+    }
+    .card::before {
+      content: '';
+      position: absolute; inset: -3px;
+      background: var(--c);
+      z-index: -1;
+      transform: translate(6px, 6px);
+      opacity: .15;
+      pointer-events: none;
+    }
+    .card:hover {
+      transform: rotate(0deg) translateY(-4px) scale(1.02);
+      box-shadow: 10px 10px 0 var(--ink);
+      z-index: 5;
+    }
+    .card-tape {
+      position: absolute; top: -10px; left: 50%;
+      width: 70px; height: 22px;
+      background: linear-gradient(180deg, rgba(245,197,24,.85), rgba(245,197,24,.7));
+      transform: translateX(-50%) rotate(-3deg);
+      border-left: 1px dashed rgba(0,0,0,.15);
+      border-right: 1px dashed rgba(0,0,0,.15);
+      box-shadow: 0 2px 4px rgba(0,0,0,.1);
+      pointer-events: none;
+    }
+    .card-tape::before, .card-tape::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 4px;
+      background: repeating-linear-gradient(-45deg, transparent 0 3px, rgba(255,255,255,.4) 3px 6px);
+    }
+    .card-tape::before { left: 0; }
+    .card-tape::after { right: 0; }
+
+    .card-head {
+      display: flex; align-items: flex-start; gap: .85rem;
+      margin-bottom: .75rem;
+      padding-top: .25rem;
+    }
+    .card-stamp {
+      flex-shrink: 0;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: var(--c);
+      display: flex; align-items: center; justify-content: center;
+      border: 2.5px solid var(--ink);
+      overflow: hidden;
+      position: relative;
+    }
+    .card-stamp img {
+      width: 60%; height: 60%; object-fit: contain;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,.2));
+    }
+    .card-stamp-emoji { font-size: 1.8rem; line-height: 1; }
+    .card-stamp::after {
+      content: '';
+      position: absolute; inset: 3px;
+      border: 1.5px dashed rgba(255,255,255,.6);
+      border-radius: 50%;
+    }
+
+    .card-title-block { flex: 1; min-width: 0; }
+    .card-name {
+      font-family: 'Bungee', sans-serif;
+      font-size: 1.4rem;
+      line-height: 1;
+      letter-spacing: -.01em;
+      text-transform: uppercase;
+      word-break: break-word;
+    }
+    .card-domain {
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      color: #777;
+      margin-top: .25rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-desc {
+      font-size: .9rem;
+      line-height: 1.5;
+      color: #333;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: .5rem;
+      margin-top: .85rem;
+      padding-top: .65rem;
+      border-top: 1.5px dashed rgba(0,0,0,.2);
+    }
+    .card-cats {
+      display: flex; flex-wrap: wrap; gap: .3rem;
+      flex: 1;
+      min-width: 0;
+    }
+    .card-category {
+      font-family: 'DM Mono', monospace;
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: .2rem .5rem;
+      background: var(--c);
+      color: #fff;
+      border: 1.5px solid var(--ink);
+      transform: rotate(-1deg);
+    }
+    .card-category + .card-category {
+      background: var(--paper);
+      color: var(--ink);
+      transform: rotate(1deg);
+    }
+    .card-category:nth-child(3n) { transform: rotate(-2deg); }
+    .card-go {
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      display: inline-flex; align-items: center; gap: .25rem;
+      color: var(--ink);
+    }
+
+    .fav-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      display: inline-flex; align-items: center; gap: .25rem;
+      background: none;
+      border: 1.5px solid rgba(0,0,0,.2);
+      padding: .15rem .45rem;
+      cursor: pointer;
+      color: var(--ink);
+      transition: transform .12s, background .15s, border-color .15s;
+    }
+    .fav-btn:hover { transform: scale(1.08); border-color: var(--ink); }
+    .fav-btn.faved { background: var(--accent); color: #fff; border-color: var(--ink); }
+    .fav-btn.faved .fav-icon { animation: heartPop .35s cubic-bezier(.34,1.56,.64,1); }
+    .fav-icon { line-height: 1; }
+    @keyframes heartPop {
+      0%   { transform: scale(.6); }
+      60%  { transform: scale(1.35); }
+      100% { transform: scale(1); }
+    }
+
+    /* perforated edge serration */
+    .card::after {
+      content: '';
+      position: absolute;
+      left: -6px; right: -6px;
+      top: 50%;
+      height: 0;
+      pointer-events: none;
+    }
+
+    /* admin actions on card */
+    .card-actions {
+      position: absolute;
+      top: -16px; right: -8px;
+      display: none;
+      gap: .25rem;
+      z-index: 6;
+    }
+    .card:hover .card-actions { display: flex; }
+    .card-actions button {
+      width: 32px; height: 32px;
+      border: 2px solid var(--ink);
+      background: #fff;
+      cursor: pointer;
+      font-size: .9rem;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+    .card-actions button:hover { background: var(--accent-3); }
+    .card-actions button.danger:hover { background: var(--accent); color: #fff; }
+
+    /* ===== STATES ===== */
+    .state {
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+      text-align: center;
+      position: relative; z-index: 1;
+    }
+    .state-icon {
+      font-size: 5rem; line-height: 1;
+      display: inline-block;
+      transform: rotate(-8deg);
+      margin-bottom: .75rem;
+    }
+    .state-title { font-family: 'Bungee', sans-serif; font-size: 2rem; }
+    .state-body { font-family: 'DM Mono', monospace; font-size: .9rem; color: #666; margin-top: .5rem; }
+
+    .skeleton {
+      background: linear-gradient(90deg, rgba(0,0,0,.06), rgba(0,0,0,.12), rgba(0,0,0,.06));
+      background-size: 200% 100%;
+      animation: shimmer 1.6s infinite;
+      border: 3px solid rgba(0,0,0,.15);
+      min-height: 220px;
+      transform: rotate(var(--rot, 0deg));
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ===== FAB ===== */
+    .fab {
+      position: fixed;
+      bottom: 1.5rem; right: 1.5rem;
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--paper);
+      border: 3px solid var(--ink);
+      box-shadow: 4px 4px 0 var(--ink);
+      cursor: pointer;
+      font-size: 2rem;
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 10;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .fab.show { display: flex; animation: fabPop .35s cubic-bezier(.34,1.56,.64,1); }
+    .fab:hover { transform: rotate(90deg); box-shadow: 6px 6px 0 var(--ink); }
+    @keyframes fabPop {
+      from { transform: scale(0) rotate(-180deg); }
+      to { transform: scale(1) rotate(0deg); }
+    }
+
+    /* ===== MODAL ===== */
+    .modal {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      display: none;
+      align-items: center; justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+      animation: fadeIn .2s ease-out;
+    }
+    .modal.open { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal-card {
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      box-shadow: 8px 8px 0 var(--ink);
+      max-width: 540px; width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      animation: slamIn .3s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes slamIn {
+      from { transform: translateY(-30px) rotate(-2deg) scale(.95); opacity: 0; }
+      to { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
+    }
+    .modal-title { font-family: 'Bungee', sans-serif; font-size: 1.6rem; margin-bottom: 1rem; }
+
+    .form-row {
+      display: flex; flex-direction: column; gap: .25rem;
+      margin-bottom: .85rem;
+    }
+    .form-row.row-2 { flex-direction: row; gap: .75rem; }
+    .form-row.row-2 > .form-row { flex: 1; }
+    .form-label {
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem; text-transform: uppercase;
+      letter-spacing: .08em;
+      color: #555;
+    }
+    .form-input {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: .95rem;
+      padding: .55rem .7rem;
+      border: 2px solid var(--ink);
+      background: #fff;
+      width: 100%;
+    }
+    .form-input:focus { outline: 3px solid var(--accent-3); outline-offset: -1px; }
+    textarea.form-input { resize: vertical; min-height: 70px; }
+
+    .color-row { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .color-swatch {
+      width: 36px; height: 36px;
+      border: 2px solid var(--ink);
+      cursor: pointer;
+      position: relative;
+    }
+    .color-swatch.active::after {
+      content: '✓';
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: bold; font-size: 1.2rem;
+      text-shadow: 0 0 3px rgba(0,0,0,.6);
+    }
+
+    .modal-actions {
+      display: flex; gap: .5rem; justify-content: flex-end;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.5rem; left: 1.5rem;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: 'DM Mono', monospace;
+      font-size: .85rem;
+      padding: .75rem 1.1rem;
+      border: 2px solid var(--ink);
+      box-shadow: 4px 4px 0 var(--accent);
+      z-index: 200;
+      display: none;
+      animation: toastIn .25s cubic-bezier(.34,1.56,.64,1);
+    }
+    .toast.show { display: block; }
+    .toast.error { box-shadow: 4px 4px 0 var(--accent-2); }
+    @keyframes toastIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ===== FOOTER ===== */
+    .pagefoot {
+      max-width: 1400px;
+      margin: 0 auto; padding: 1.5rem;
+      font-family: 'DM Mono', monospace; font-size: .72rem;
+      color: #777;
+      text-align: center;
+      position: relative; z-index: 1;
+    }
+    .pagefoot a { color: var(--ink); text-decoration: underline; text-decoration-style: wavy; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 640px) {
+      .masthead { padding-top: 2rem; }
+      .title-stamp { display: none; }
+      .grid { gap: 1.25rem; }
+      .card { box-shadow: 4px 4px 0 var(--ink); transform: rotate(0); }
+      .card:hover { box-shadow: 6px 6px 0 var(--ink); }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="masthead-row">
+      <a href="/" class="back-link"><i class="ri-arrow-left-line"></i> seiji.life</a>
+      <div class="auth-corner">
+        <span id="userBadge" style="display:none;font-family:'DM Mono',monospace;font-size:.75rem;color:#666"></span>
+        <button id="headerAddBtn" class="btn btn-primary" style="display:none"><i class="ri-add-line"></i> Add catalog</button>
+        <button id="authBtn" class="btn btn-ghost"><i class="ri-google-fill"></i> <span id="authBtnLabel">Sign in</span></button>
+      </div>
+    </div>
+    <div class="title-block">
+      <h1 class="title"><span>The</span> <span>Catalogs</span><span class="title-stamp">approved!</span></h1>
+      <p class="tagline">A hand-picked shelf of <strong>obsessive databases</strong> from across the internet — the kind of sites where you can spend three hours comparing pixel densities or ammunition rim diameters and not regret a minute of it.</p>
+    </div>
+  </header>
+
+  <div class="filter-bar" id="filterBar"></div>
+  <div class="filter-bar filter-bar-lang" id="langFilterBar"></div>
+  <div class="sort-bar">
+    <span class="sort-label">Sort by</span>
+    <button class="sort-pill" data-sort="favorites"><i class="ri-heart-fill"></i> Most favorited</button>
+    <button class="sort-pill" data-sort="newest"><i class="ri-time-line"></i> Newest</button>
+    <button class="sort-pill" data-sort="alpha"><i class="ri-sort-alphabet-asc"></i> A → Z</button>
+  </div>
+
+  <main class="grid" id="grid"></main>
+
+  <div class="state" id="emptyState" style="display:none">
+    <div class="state-icon">📭</div>
+    <div class="state-title">Empty shelf</div>
+    <div class="state-body" id="emptyMessage">Nothing here yet — come back later.</div>
+  </div>
+
+  <div class="state" id="errorState" style="display:none">
+    <div class="state-icon">⚠️</div>
+    <div class="state-title">Couldn't load</div>
+    <div class="state-body" id="errorMessage"></div>
+  </div>
+
+  <footer class="pagefoot">
+    <p>Curated by <a href="/">Seiji</a> · Live database, edits restricted to one human, browsing is free for all.</p>
+  </footer>
+
+  <button class="fab" id="fab" title="Add a catalog"><i class="ri-add-line"></i></button>
+
+  <!-- Edit / Add modal -->
+  <div class="modal" id="modal">
+    <div class="modal-card">
+      <h2 class="modal-title" id="modalTitle">Add a catalog</h2>
+      <form id="catalogForm" autocomplete="off">
+        <div class="form-row">
+          <label class="form-label">Name</label>
+          <input class="form-input" name="name" required maxlength="60" placeholder="e.g. GSMArena">
+        </div>
+        <div class="form-row">
+          <label class="form-label">URL</label>
+          <input class="form-input" name="url" type="url" required placeholder="https://...">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Short description</label>
+          <textarea class="form-input" name="description" maxlength="200" placeholder="What does it catalog?"></textarea>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Categories <span style="text-transform:none;color:#888">(comma-separated)</span></label>
+          <input class="form-input" name="categories" required maxlength="120" placeholder="Tech, Reviews, Phones">
+        </div>
+        <div class="form-row row-2">
+          <div class="form-row">
+            <label class="form-label">Language</label>
+            <input class="form-input" name="language" maxlength="30" value="English" list="languageList">
+            <datalist id="languageList">
+              <option value="English"></option>
+              <option value="Portuguese"></option>
+              <option value="Spanish"></option>
+              <option value="French"></option>
+              <option value="German"></option>
+              <option value="Italian"></option>
+              <option value="Japanese"></option>
+              <option value="Chinese"></option>
+            </datalist>
+          </div>
+          <div class="form-row">
+            <label class="form-label">Emoji (optional)</label>
+            <input class="form-input" name="emoji" maxlength="4" placeholder="📱">
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Color</label>
+          <div class="color-row" id="colorRow"></div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="cancelBtn">Cancel</button>
+          <button type="button" class="btn" id="deleteBtn" style="display:none;background:var(--accent);color:#fff">Delete</button>
+          <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import {
+      getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged
+    } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+    import {
+      getFirestore, collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc,
+      query, orderBy, serverTimestamp, runTransaction
+    } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { firebaseConfig } from '/boardgames/scripts/firebase-config.js';
+
+    const OWNER_EMAIL = 'rodrigo.seiji.hirao@gmail.com';
+
+    const PALETTE = ['#ff3b30', '#2f6cf6', '#f5c518', '#2ecc71', '#9b59b6', '#ff8c42', '#1abc9c', '#e84393', '#34495e'];
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    const state = {
+      user: null,
+      isOwner: false,
+      catalogs: [],
+      myFavorites: new Set(),  // catalogIds the current user has favorited (from catalogUserFavorites doc)
+      activeCategory: 'all',
+      activeLanguage: 'all',
+      onlyFavorites: false,
+      sortBy: 'favorites', // 'favorites' | 'newest'
+      editingId: null,
+      pendingColor: PALETTE[0],
+      loaded: false,
+      loadError: null,
+    };
+
+    // ===== DOM REFS =====
+    const $ = (id) => document.getElementById(id);
+    const gridEl = $('grid');
+    const filterBar = $('filterBar');
+    const langFilterBar = $('langFilterBar');
+    const fabEl = $('fab');
+    const modalEl = $('modal');
+    const formEl = $('catalogForm');
+    const colorRowEl = $('colorRow');
+    const deleteBtn = $('deleteBtn');
+    const cancelBtn = $('cancelBtn');
+    const modalTitle = $('modalTitle');
+    const authBtn = $('authBtn');
+    const authBtnLabel = $('authBtnLabel');
+    const userBadge = $('userBadge');
+    const toastEl = $('toast');
+    const emptyState = $('emptyState');
+    const errorState = $('errorState');
+    const errorMessage = $('errorMessage');
+
+    // ===== HELPERS =====
+    function showToast(msg, type) {
+      toastEl.textContent = msg;
+      toastEl.className = 'toast show' + (type === 'error' ? ' error' : '');
+      setTimeout(() => toastEl.classList.remove('show'), 2500);
+    }
+
+    function faviconFor(url) {
+      try {
+        const u = new URL(url);
+        return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=128`;
+      } catch { return ''; }
+    }
+
+    function domainOf(url) {
+      try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; }
+    }
+
+    // Backward-compatible: accept legacy `category` (string) or `categories` (array).
+    function catsOf(cat) {
+      if (Array.isArray(cat.categories)) return cat.categories.filter(Boolean);
+      if (typeof cat.category === 'string' && cat.category.trim()) return [cat.category.trim()];
+      return [];
+    }
+    function langOf(cat) {
+      const l = (cat.language || '').trim();
+      return l || 'English';
+    }
+
+    // Language → flag emoji. Lookup is case-insensitive on the part before any parenthetical.
+    // The parenthetical wins when present: "Portuguese (Portugal)" → 🇵🇹.
+    const FLAG_MAP = {
+      'english': '🇺🇸', 'english (uk)': '🇬🇧', 'english (us)': '🇺🇸', 'english (au)': '🇦🇺',
+      'portuguese': '🇧🇷', 'portuguese (brazil)': '🇧🇷', 'portuguese (portugal)': '🇵🇹', 'português': '🇧🇷',
+      'spanish': '🇪🇸', 'español': '🇪🇸',
+      'french': '🇫🇷', 'français': '🇫🇷',
+      'german': '🇩🇪', 'deutsch': '🇩🇪',
+      'italian': '🇮🇹', 'italiano': '🇮🇹',
+      'japanese': '🇯🇵', '日本語': '🇯🇵',
+      'chinese': '🇨🇳', '中文': '🇨🇳',
+      'korean': '🇰🇷', '한국어': '🇰🇷',
+      'russian': '🇷🇺', 'русский': '🇷🇺',
+      'dutch': '🇳🇱',
+      'arabic': '🇸🇦',
+      'hindi': '🇮🇳',
+      'swedish': '🇸🇪',
+      'polish': '🇵🇱',
+    };
+    function flagFor(language) {
+      const key = (language || '').trim().toLowerCase();
+      if (!key) return '';
+      if (FLAG_MAP[key]) return FLAG_MAP[key];
+      // Try the part before/in the parenthetical
+      const paren = key.match(/\(([^)]+)\)/);
+      if (paren && FLAG_MAP[paren[1].trim()]) return FLAG_MAP[paren[1].trim()];
+      const base = key.replace(/\s*\(.*\)\s*/, '').trim();
+      return FLAG_MAP[base] || '🏳️';
+    }
+
+    function parseCategoryInput(raw) {
+      return (raw || '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean)
+        .filter((c, i, arr) => arr.indexOf(c) === i); // dedupe
+    }
+
+    function favCountOf(cat) {
+      return typeof cat.favoritesCount === 'number' ? cat.favoritesCount : 0;
+    }
+    function isFavedByMe(cat) {
+      return state.myFavorites.has(cat.id);
+    }
+
+    function rotationSeed(id) {
+      let h = 0;
+      for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+      return ((h % 5) - 2) * 0.7; // -1.4deg .. +1.4deg
+    }
+
+    function renderSkeletons(n = 6) {
+      gridEl.innerHTML = '';
+      for (let i = 0; i < n; i++) {
+        const el = document.createElement('div');
+        el.className = 'card skeleton';
+        el.style.setProperty('--rot', `${((i % 5) - 2) * 0.6}deg`);
+        gridEl.appendChild(el);
+      }
+    }
+
+    function renderFilterBar() {
+      const all = new Set();
+      state.catalogs.forEach(c => catsOf(c).forEach(x => all.add(x)));
+      const categories = ['all', ...[...all].sort((a, b) => a.localeCompare(b))];
+      if (state.activeCategory !== 'all' && !all.has(state.activeCategory)) {
+        state.activeCategory = 'all';
+      }
+      filterBar.innerHTML = '';
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-pill' + (state.activeCategory === cat ? ' active' : '');
+        btn.textContent = cat === 'all' ? `All · ${state.catalogs.length}` : cat;
+        btn.onclick = () => { state.activeCategory = cat; renderFilterBar(); renderGrid(); };
+        filterBar.appendChild(btn);
+      });
+      // Favorites pill — only when signed in and the user has at least one favorite.
+      const myFavCount = state.user ? state.myFavorites.size : 0;
+      if (state.user && myFavCount > 0) {
+        const fav = document.createElement('button');
+        fav.className = 'filter-pill' + (state.onlyFavorites ? ' active' : '');
+        const heartI = document.createElement('i');
+        heartI.className = 'ri-heart-' + (state.onlyFavorites ? 'fill' : 'line');
+        fav.appendChild(heartI);
+        fav.appendChild(document.createTextNode(` Favorites · ${myFavCount}`));
+        fav.style.borderStyle = 'solid';
+        fav.onclick = () => { state.onlyFavorites = !state.onlyFavorites; renderFilterBar(); renderGrid(); };
+        filterBar.appendChild(fav);
+      } else if (state.onlyFavorites) {
+        // Lost the ability to filter favorites (e.g. signed out) — clear it.
+        state.onlyFavorites = false;
+      }
+      renderLangFilterBar();
+    }
+
+    function renderLangFilterBar() {
+      const all = new Set();
+      state.catalogs.forEach(c => all.add(langOf(c)));
+      const languages = [...all].sort((a, b) => a.localeCompare(b));
+      if (state.activeLanguage !== 'all' && !all.has(state.activeLanguage)) {
+        state.activeLanguage = 'all';
+      }
+      langFilterBar.innerHTML = '';
+      if (languages.length < 2) return; // no point filtering when there's only one language
+      const items = ['all', ...languages];
+      items.forEach(lang => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-pill' + (state.activeLanguage === lang ? ' active' : '');
+        if (lang === 'all') {
+          btn.textContent = 'All languages';
+        } else {
+          const flagSpan = document.createElement('span');
+          flagSpan.className = 'flag';
+          flagSpan.textContent = flagFor(lang);
+          btn.appendChild(flagSpan);
+          btn.appendChild(document.createTextNode(lang));
+        }
+        btn.onclick = () => { state.activeLanguage = lang; renderLangFilterBar(); renderGrid(); };
+        langFilterBar.appendChild(btn);
+      });
+    }
+
+    function makeCard(cat) {
+      const a = document.createElement('a');
+      a.className = 'card';
+      a.href = cat.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.style.setProperty('--c', cat.color || PALETTE[0]);
+      a.style.setProperty('--rot', `${rotationSeed(cat.id || cat.name)}deg`);
+
+      const tape = document.createElement('div');
+      tape.className = 'card-tape';
+      a.appendChild(tape);
+
+      const head = document.createElement('div');
+      head.className = 'card-head';
+
+      const stamp = document.createElement('div');
+      stamp.className = 'card-stamp';
+      if (cat.emoji) {
+        const e = document.createElement('span');
+        e.className = 'card-stamp-emoji';
+        e.textContent = cat.emoji;
+        stamp.appendChild(e);
+      } else {
+        const img = document.createElement('img');
+        img.src = faviconFor(cat.url);
+        img.alt = '';
+        img.referrerPolicy = 'no-referrer';
+        img.onerror = () => { stamp.innerHTML = '<span class="card-stamp-emoji">🔗</span>'; };
+        stamp.appendChild(img);
+      }
+      head.appendChild(stamp);
+
+      const titleBlock = document.createElement('div');
+      titleBlock.className = 'card-title-block';
+      const name = document.createElement('div');
+      name.className = 'card-name';
+      name.textContent = cat.name;
+      const domain = document.createElement('div');
+      domain.className = 'card-domain';
+      const lang = langOf(cat);
+      const flag = flagFor(lang);
+      domain.textContent = `${domainOf(cat.url)} · ${flag} ${lang}`;
+      titleBlock.appendChild(name);
+      titleBlock.appendChild(domain);
+      head.appendChild(titleBlock);
+      a.appendChild(head);
+
+      if (cat.description) {
+        const desc = document.createElement('p');
+        desc.className = 'card-desc';
+        desc.textContent = cat.description;
+        a.appendChild(desc);
+      }
+
+      const footer = document.createElement('div');
+      footer.className = 'card-footer';
+      const catsWrap = document.createElement('div');
+      catsWrap.className = 'card-cats';
+      const cats = catsOf(cat);
+      (cats.length ? cats : ['misc']).forEach(name => {
+        const badge = document.createElement('span');
+        badge.className = 'card-category';
+        badge.textContent = name;
+        catsWrap.appendChild(badge);
+      });
+      footer.appendChild(catsWrap);
+
+      const right = document.createElement('div');
+      right.style.cssText = 'display:flex;align-items:center;gap:.4rem;flex-shrink:0';
+
+      const favBtn = document.createElement('button');
+      const faved = isFavedByMe(cat);
+      const count = favCountOf(cat);
+      favBtn.type = 'button';
+      favBtn.className = 'fav-btn' + (faved ? ' faved' : '');
+      favBtn.title = state.user ? (faved ? 'Unfavorite' : 'Favorite') : 'Sign in to favorite';
+      const favIconSpan = document.createElement('span');
+      favIconSpan.className = 'fav-icon';
+      const favIconI = document.createElement('i');
+      favIconI.className = 'ri-heart-' + (faved ? 'fill' : 'line');
+      favIconSpan.appendChild(favIconI);
+      const favCountSpan = document.createElement('span');
+      favCountSpan.textContent = String(count);
+      favBtn.appendChild(favIconSpan);
+      favBtn.appendChild(favCountSpan);
+      favBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(cat); };
+      right.appendChild(favBtn);
+
+      const go = document.createElement('span');
+      go.className = 'card-go';
+      go.innerHTML = 'Visit <i class="ri-external-link-line"></i>';
+      right.appendChild(go);
+
+      footer.appendChild(right);
+      a.appendChild(footer);
+
+      if (state.isOwner) {
+        const actions = document.createElement('div');
+        actions.className = 'card-actions';
+        const edit = document.createElement('button');
+        edit.title = 'Edit';
+        edit.innerHTML = '<i class="ri-pencil-line"></i>';
+        edit.onclick = (e) => { e.preventDefault(); e.stopPropagation(); openModal(cat); };
+        const del = document.createElement('button');
+        del.title = 'Delete';
+        del.className = 'danger';
+        del.innerHTML = '<i class="ri-delete-bin-line"></i>';
+        del.onclick = async (e) => {
+          e.preventDefault(); e.stopPropagation();
+          if (!confirm(`Delete "${cat.name}"?`)) return;
+          try {
+            await deleteDoc(doc(db, 'catalogs', cat.id));
+            state.catalogs = state.catalogs.filter(c => c.id !== cat.id);
+            renderFilterBar(); renderGrid();
+            showToast('Deleted');
+          } catch (err) {
+            console.error(err);
+            showToast('Could not delete', 'error');
+          }
+        };
+        actions.appendChild(edit);
+        actions.appendChild(del);
+        a.appendChild(actions);
+      }
+
+      return a;
+    }
+
+    function renderGrid() {
+      // Don't fight the skeletons or the error state while load is in flight / failed.
+      if (!state.loaded || state.loadError) return;
+      gridEl.innerHTML = '';
+      const filtered = state.catalogs.filter(c => {
+        const catMatch = state.activeCategory === 'all' || catsOf(c).includes(state.activeCategory);
+        const langMatch = state.activeLanguage === 'all' || langOf(c) === state.activeLanguage;
+        const favMatch = !state.onlyFavorites || isFavedByMe(c);
+        return catMatch && langMatch && favMatch;
+      });
+      // Sort
+      if (state.sortBy === 'favorites') {
+        filtered.sort((a, b) => favCountOf(b) - favCountOf(a) || (a.name || '').localeCompare(b.name || ''));
+      } else if (state.sortBy === 'alpha') {
+        filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+      }
+      if (filtered.length === 0) {
+        const msg = state.catalogs.length === 0
+          ? 'Nothing here yet — the curator has not added any catalogs.'
+          : 'No catalogs match these filters. Try a different combination.';
+        document.getElementById('emptyMessage').textContent = msg;
+        emptyState.style.display = 'block';
+        return;
+      }
+      emptyState.style.display = 'none';
+      filtered.forEach(c => gridEl.appendChild(makeCard(c)));
+    }
+
+    function renderColorPicker() {
+      colorRowEl.innerHTML = '';
+      PALETTE.forEach(c => {
+        const sw = document.createElement('div');
+        sw.className = 'color-swatch' + (state.pendingColor === c ? ' active' : '');
+        sw.style.background = c;
+        sw.onclick = () => {
+          state.pendingColor = c;
+          renderColorPicker();
+        };
+        colorRowEl.appendChild(sw);
+      });
+    }
+
+    // ===== MODAL =====
+    function openModal(existing) {
+      state.editingId = existing?.id || null;
+      modalTitle.textContent = existing ? 'Edit catalog' : 'Add a catalog';
+      formEl.name.value = existing?.name || '';
+      formEl.url.value = existing?.url || '';
+      formEl.description.value = existing?.description || '';
+      formEl.categories.value = existing ? catsOf(existing).join(', ') : '';
+      formEl.language.value = existing ? langOf(existing) : 'English';
+      formEl.emoji.value = existing?.emoji || '';
+      state.pendingColor = existing?.color || PALETTE[0];
+      renderColorPicker();
+      deleteBtn.style.display = existing ? 'inline-flex' : 'none';
+      modalEl.classList.add('open');
+      setTimeout(() => formEl.name.focus(), 50);
+    }
+    function closeModal() {
+      modalEl.classList.remove('open');
+      state.editingId = null;
+    }
+    cancelBtn.onclick = closeModal;
+    modalEl.onclick = (e) => { if (e.target === modalEl) closeModal(); };
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalEl.classList.contains('open')) closeModal();
+    });
+
+    formEl.onsubmit = async (e) => {
+      e.preventDefault();
+      if (!state.isOwner) { showToast('Only the curator can edit', 'error'); return; }
+      const cats = parseCategoryInput(formEl.categories.value);
+      if (cats.length === 0) {
+        showToast('Add at least one category', 'error');
+        return;
+      }
+      const data = {
+        name: formEl.name.value.trim(),
+        url: formEl.url.value.trim(),
+        description: formEl.description.value.trim(),
+        categories: cats,
+        language: formEl.language.value.trim() || 'English',
+        emoji: formEl.emoji.value.trim(),
+        color: state.pendingColor,
+        updatedAt: serverTimestamp(),
+      };
+      try {
+        if (state.editingId) {
+          await updateDoc(doc(db, 'catalogs', state.editingId), data);
+          const idx = state.catalogs.findIndex(c => c.id === state.editingId);
+          if (idx >= 0) state.catalogs[idx] = { ...state.catalogs[idx], ...data };
+          showToast('Saved');
+        } else {
+          data.createdAt = serverTimestamp();
+          data.favoritesCount = 0;
+          const ref = await addDoc(collection(db, 'catalogs'), data);
+          state.catalogs.unshift({ id: ref.id, ...data });
+          showToast('Added');
+        }
+        closeModal();
+        renderFilterBar(); renderGrid();
+      } catch (err) {
+        console.error(err);
+        showToast('Save failed: ' + (err.code || err.message), 'error');
+      }
+    };
+
+    deleteBtn.onclick = async () => {
+      if (!state.editingId) return;
+      if (!confirm('Delete this catalog?')) return;
+      try {
+        await deleteDoc(doc(db, 'catalogs', state.editingId));
+        state.catalogs = state.catalogs.filter(c => c.id !== state.editingId);
+        closeModal();
+        renderFilterBar(); renderGrid();
+        showToast('Deleted');
+      } catch (err) {
+        console.error(err);
+        showToast('Delete failed', 'error');
+      }
+    };
+
+    fabEl.onclick = () => openModal(null);
+    document.getElementById('headerAddBtn').onclick = () => openModal(null);
+
+    function renderSortBar() {
+      document.querySelectorAll('.sort-pill').forEach(p => {
+        p.classList.toggle('active', p.dataset.sort === state.sortBy);
+      });
+    }
+    document.querySelectorAll('.sort-pill').forEach(p => {
+      p.onclick = () => { state.sortBy = p.dataset.sort; renderSortBar(); renderGrid(); };
+    });
+    renderSortBar();
+
+    async function loadMyFavorites(uid) {
+      state.myFavorites = new Set();
+      if (!uid) return;
+      try {
+        const snap = await getDoc(doc(db, 'catalogUserFavorites', uid));
+        if (snap.exists()) {
+          const ids = snap.data().catalogIds || [];
+          state.myFavorites = new Set(ids);
+        }
+      } catch (err) {
+        console.error('Failed to load my favorites:', err);
+      }
+    }
+
+    async function toggleFavorite(cat) {
+      if (!state.user) {
+        showToast('Sign in to favorite a catalog');
+        try { await signInWithPopup(auth, provider); } catch { return; }
+      }
+      const uid = state.user?.uid;
+      if (!uid || !cat.id) return;
+      const idx = state.catalogs.findIndex(c => c.id === cat.id);
+      if (idx < 0) return;
+      const wasFaved = state.myFavorites.has(cat.id);
+      const prevCount = favCountOf(state.catalogs[idx]);
+
+      // Optimistic update
+      if (wasFaved) state.myFavorites.delete(cat.id);
+      else state.myFavorites.add(cat.id);
+      state.catalogs[idx] = {
+        ...state.catalogs[idx],
+        favoritesCount: Math.max(0, prevCount + (wasFaved ? -1 : 1)),
+      };
+      renderFilterBar(); renderGrid();
+
+      try {
+        await runTransaction(db, async (tx) => {
+          const userRef = doc(db, 'catalogUserFavorites', uid);
+          const catRef = doc(db, 'catalogs', cat.id);
+          const [userSnap, catSnap] = await Promise.all([tx.get(userRef), tx.get(catRef)]);
+          if (!catSnap.exists()) throw new Error('Catalog no longer exists');
+          const ids = userSnap.exists() ? (userSnap.data().catalogIds || []) : [];
+          const has = ids.includes(cat.id);
+          const newIds = has ? ids.filter(x => x !== cat.id) : [...ids, cat.id];
+          const currentCount = catSnap.data().favoritesCount || 0;
+          const newCount = Math.max(0, currentCount + (has ? -1 : 1));
+          tx.set(userRef, { catalogIds: newIds, updatedAt: serverTimestamp() }, { merge: true });
+          tx.update(catRef, { favoritesCount: newCount });
+        });
+      } catch (err) {
+        console.error(err);
+        // revert optimistic update
+        if (wasFaved) state.myFavorites.add(cat.id);
+        else state.myFavorites.delete(cat.id);
+        state.catalogs[idx] = { ...state.catalogs[idx], favoritesCount: prevCount };
+        renderFilterBar(); renderGrid();
+        showToast('Could not update favorite', 'error');
+      }
+    }
+
+    // ===== AUTH =====
+    authBtn.onclick = async () => {
+      if (state.user) {
+        await signOut(auth);
+      } else {
+        try {
+          await signInWithPopup(auth, provider);
+        } catch (err) {
+          console.error(err);
+          showToast('Sign-in cancelled', 'error');
+        }
+      }
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      state.user = user;
+      state.isOwner = !!user && (user.email || '').toLowerCase() === OWNER_EMAIL;
+      if (user) {
+        authBtnLabel.textContent = state.isOwner ? 'Sign out' : 'Sign out';
+        userBadge.textContent = user.email;
+        userBadge.style.display = 'inline';
+      } else {
+        authBtnLabel.textContent = 'Sign in';
+        userBadge.style.display = 'none';
+      }
+      fabEl.classList.toggle('show', state.isOwner);
+      document.getElementById('headerAddBtn').style.display = state.isOwner ? 'inline-flex' : 'none';
+      await loadMyFavorites(user?.uid);
+      if (!state.user) state.onlyFavorites = false;
+      if (state.loaded) renderFilterBar();
+      renderGrid();
+    });
+
+    // ===== LOAD =====
+    async function load() {
+      renderSkeletons(6);
+      try {
+        const snap = await getDocs(query(collection(db, 'catalogs'), orderBy('createdAt', 'desc')));
+        state.catalogs = [];
+        snap.forEach(d => state.catalogs.push({ id: d.id, ...d.data() }));
+        state.loaded = true;
+        state.loadError = null;
+        errorState.style.display = 'none';
+        renderFilterBar();
+        renderGrid();
+      } catch (err) {
+        console.error(err);
+        state.loadError = err;
+        gridEl.innerHTML = '';
+        emptyState.style.display = 'none';
+        errorState.style.display = 'block';
+        errorMessage.textContent = err.message || 'Unknown error';
+      }
+    }
+    load();
+  </script>
+</body>
+</html>

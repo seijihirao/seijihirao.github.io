@@ -35,6 +35,66 @@ service cloud.firestore {
       allow create, delete: if isBoardgameOwner();
     }
 
+    function isCatalogCurator() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && request.auth.token.email.lower() == 'rodrigo.seiji.hirao@gmail.com';
+    }
+
+    // Read the signed-in user's existing catalog-favorites list (empty if missing).
+    function myCatalogFavsBefore(database) {
+      return exists(/databases/$(database)/documents/catalogUserFavorites/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/catalogUserFavorites/$(request.auth.uid)).data.get('catalogIds', [])
+        : [];
+    }
+    // Read the signed-in user's catalog-favorites list AFTER the current transaction.
+    function myCatalogFavsAfter(database) {
+      return existsAfter(/databases/$(database)/documents/catalogUserFavorites/$(request.auth.uid))
+        ? getAfter(/databases/$(database)/documents/catalogUserFavorites/$(request.auth.uid)).data.get('catalogIds', [])
+        : [];
+    }
+
+    // Public read directory of catalog websites.
+    // - Curator has full write access.
+    // - Any signed-in user can adjust the public favoritesCount by ±1, but only as part
+    //   of a transaction that also adds/removes the matching catalogId in their own
+    //   catalogUserFavorites doc. This prevents inflating counts without favoriting.
+    match /catalogs/{catalogId} {
+      allow read: if true;
+
+      allow create, delete: if isCatalogCurator();
+      allow update: if isCatalogCurator();
+
+      // Favorite toggle: signed-in user changes only favoritesCount by ±1,
+      // mirrored by a corresponding add/remove in their own favorites doc.
+      allow update: if request.auth != null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['favoritesCount'])
+        && request.resource.data.favoritesCount is int
+        && request.resource.data.favoritesCount >= 0
+        && (
+          // increment: catalogId was NOT in user's favs and IS now
+          (request.resource.data.favoritesCount == resource.data.get('favoritesCount', 0) + 1
+            && !(catalogId in myCatalogFavsBefore(database))
+            && (catalogId in myCatalogFavsAfter(database)))
+          ||
+          // decrement: catalogId WAS in user's favs and is NOT now
+          (request.resource.data.favoritesCount == resource.data.get('favoritesCount', 0) - 1
+            && (catalogId in myCatalogFavsBefore(database))
+            && !(catalogId in myCatalogFavsAfter(database)))
+        );
+    }
+
+    // Per-user catalog-favorites list. Only the user can read/write their own doc.
+    // Limits doc shape and array size to avoid runaway growth or arbitrary fields.
+    match /catalogUserFavorites/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create, update: if request.auth != null && request.auth.uid == userId
+        && request.resource.data.keys().hasOnly(['catalogIds', 'updatedAt'])
+        && request.resource.data.catalogIds is list
+        && request.resource.data.catalogIds.size() <= 1000;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
     match /health-docs/{fichaId} {
       allow create: if request.auth != null;
       allow read, update: if request.auth != null && (
